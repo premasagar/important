@@ -78,13 +78,17 @@
 	                        style = cssText(key, value, style);
 	                    });
 	                    return elem.attr('style', style);
-                    },
+                    }
+                    
+                    // TODO: other methods to be supported
+                    /*,
 	            
 	                width: function(){},
 	                height: function(){},
 	                show: function(){},
 	                hide: function(){},
 	                animate: function(){}
+	                */
 	        },
 	        
 	        function(method, fn){
