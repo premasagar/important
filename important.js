@@ -1,14 +1,30 @@
-// $.important('css', {border:'1px solid red'});
-// $.important.noConflict(); // releases overriden methods; returns methods as property of an object
-// $.important(true); // toggle overriden state -> on
-// $.important(false); // toggle overrident state -> off; identical to $.important.noConflict();
-// $.important('animate', {padding:75}, 'slow');
-// $.important({padding:'75px'}); // uses default 'css' method
-// $.important(); // returns current on or off state
-// $.important = override({css:function(), animate:function()});
+'use strict';
 
+/*!
+* !important
+*   github.com/premasagar/mishmash/tree/master/important/
+*
+*//*
+    css !important manipulator (native JS + jQuery plugin)
 
+    by Premasagar Rose
+        dharmafly.com
 
+    license
+        opensource.org/licenses/mit-license.php
+        
+    v0.1
+
+*//*
+    creates methods
+        jQuery(elem).important(method, [args])
+        jQuery.important.noConflict
+    
+    overrides native jQuery methods for css(), width(), height(), animate(), show() and hide(), allowing an optional last argument of boolean true, to pass the request through the !important function
+    
+    use jQuery.important.noConflict() to revert back to the native jQuery methods, and returns the overriding methods
+
+*/
 (function($){
     // create CSS text from key + value, and optionally the existing cssText
     function cssText(key, value, css){ // if value === null, then remove from style; if style then merge with that
@@ -121,13 +137,4 @@
             return replacement;
         }
     };
-        
-        // e.g. jQuery(elem).cleanslate('css', {border:'red'}) === jQuery(elem).css({border:'red'}, true) === jQuery(elem).attr({style:'border:red!important;'});
 }(jQuery));
-
-// **
-
-// TESTS
-var elem = $('<div style="padding:1em"></div>').appendTo('body');
-elem.important('css', {border:'1px solid red', padding:'10px'});
-console.log(jQuery.important, elem, elem.important, elem.attr('style'));
