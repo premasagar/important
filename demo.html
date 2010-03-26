@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang=en>
+<head>
+    <meta charset=utf-8 />
+    <title>!important</title>
+    <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
+    <script src=important.js></script>
+    
+    <style>
+        /*
+        */
+    </style>
+</head>
+
+<body>
+    <h1>!important</h1>
+    
+    <script>
+        // TESTS
+        // jQuery.important.noConflict();
+        var elem = $('<div style="padding:1em"></div>').appendTo('body');
+        elem.important('css', {border:'1px solid red', padding:'10px'});
+        console.log(jQuery.important, elem, elem.important, elem.attr('style'));
+        elem.css({border:'1px solid green'}, true);
+        console.log(elem.attr('style'));
+        console.log(elem.css.toString());
+        console.log(elem.css('border'));
+        elem.css('border', '1px solid red');
+        console.log(elem.css('border'));
+        elem.css('border', '1px solid red', true);
+        console.log(elem.css('border'));
+    </script>
+</body>
+</html>
