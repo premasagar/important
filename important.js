@@ -23,31 +23,75 @@
     overrides native jQuery methods for css(), width(), height(), animate(), show() and hide(), allowing an optional last argument of boolean true, to pass the request through the !important function
     
     use jQuery.important.noConflict() to revert back to the native jQuery methods, and returns the overriding methods
+    
+    reference
+        http://www.w3.org/TR/CSS2/syndata.html#tokenization
 
 */
 (function($){
-    // create CSS text from key + value, and optionally the existing cssText
-    function cssText(key, value, css){ // if value === null, then remove from style; if style then merge with that
-        var rule = (value !== null) ?
+
+    // create CSS text from key & value, optionally inserting it into the supplied CSS rule
+    // e.g. declaration('width', '50%', 'margin:2em; width:auto;');
+    function cssDeclaration(key, value, rules){ // if value === null, then remove from style; if style then merge with that
+        var declaration = (value !== null) ?
             key + ':' + value + ' !important;' :
             '';
             
-        css = css || '';
+        rules = rules || '';
         
-        if (css.toLowerCase().indexOf(key.toLowerCase()) !== -1){
-            css = css.replace(new RegExp(key + '\\s*:\\s*[^;]*(;|$)', 'i'), rule);
+        if (rules.toLowerCase().indexOf(key.toLowerCase()) !== -1){
+            rules = rules.replace(new RegExp(key + '\\s*:\\s*[^;]*(;|$)', 'i'), declaration);
         }
         else {
-            css = $.trim(css); // TODO: replace with native JS trim
-            if (css !== ''){
-	            if (css.slice(-1) !== ';'){
-		            css += ';';
+            rules = $.trim(rules); // TODO: replace with native JS trim
+            if (rules !== ''){
+	            if (rules.slice(-1) !== ';'){
+		            rules += ';';
 	            }
-	            css += ' ';
+	            rules += ' ';
             }
-            css += rule;
+            rules += declaration;
         }
-        return css;
+        return rules;
+    }
+    
+    
+    // Native JS function for inserting !important rules into an element
+    // Not required when jQuery(elem).important is available
+    /*
+    function insertDeclaration(key, value, elem){
+        return elem.setAttribute('style', cssDeclaration(key, value, elem.getAttribute('style')));
+    }
+    */
+    
+    
+    // Add !important to the end of CSS rules, except to those that already have it
+    function toImportant(rulesets, invertIfFalse){
+        // Cache regular expression
+        var re = toImportant.re;
+        if (!re){
+            re = toImportant.re =
+                /\s*(!important)?[\s\r\t\n]*;/g;
+                // TODO: Make this regexp handle missing semicolons at the end of a ruleset
+        }
+        if (invertIfFalse === false){
+            return rulesets.replace(re, ';');
+        }
+        return rulesets.replace(re, function($0, $1){
+            return $1 ? $0 : ' !important;';
+        });
+    }
+    
+    function htmlStylesToImportant(html, invertIfFalse){
+        // Cache regular expression
+        var re = htmlStylesToImportant.re;
+        if (!re){
+            re = htmlStylesToImportant.re =
+                /(?=<style[^>]*>)([\w\W]*?)(?=<\/style>)/g;
+        }
+        return html.replace(re, function($0, rulesets){
+            return toImportant(rulesets, invertIfFalse);
+        });
     }
     
     // **
@@ -60,24 +104,24 @@
 	            css:
                     function(key, value){
 	                    var
-	                        rules = {},
+	                        rulesHash = {},
 	                        elem = $(this),
-	                        style = elem.attr('style');
+	                        rules = elem.attr('style');
 	
 	                    // Create object, if arg is a string
 	                    if (typeof key === 'string'){
-		                    rules[key] = value;
+		                    rulesHash[key] = value;
 	                    }
 	                    else if (typeof key === 'object'){
-	                        rules = key;
+	                        rulesHash = key;
 	                    }
 	                    else {
 	                        return elem;
 	                    }
-	                    $.each(rules, function(key, value){
-	                        style = cssText(key, value, style);
+	                    $.each(rulesHash, function(key, value){
+	                        rules = cssDeclaration(key, value, rules);
 	                    });
-	                    return elem.attr('style', style);
+	                    return elem.attr('style', rules);
                     }
                     
                     // TODO: other methods to be supported
@@ -131,14 +175,35 @@
         return elem;
     };
     
+    
     // jQuery.important
-    $.important = {
-        // release native jQuery methods back to their original versions and return overriding methods
-        noConflict: function(){
-            $.each(original, function(method, fn){
-                $.fn[method] = fn;
-            });
-            return replacement;
+    
+    // TODO:
+    /*
+    $.important('margin:0', 'padding:0; margin:auto;');
+    
+    */
+    $.important = $.extend(
+        function(){
+            var
+                args = $.makeArray(arguments),
+                invertIfFalse;
+            
+            if (typeof args[0] !== 'undefined' && (typeof args[1] === 'undefined' || args[1] === false)){
+                invertIfFalse = args[1];
+                return (/<\w+.*>/).test(args[0]) ?
+                     htmlStylesToImportant(args[0], invertIfFalse) :
+                     toImportant(args[0], invertIfFalse);
+            }
+        },
+        {
+            // release native jQuery methods back to their original versions and return overriding methods
+            noConflict: function(){
+                $.each(original, function(method, fn){
+                    $.fn[method] = fn;
+                });
+                return replacement;
+            }
         }
-    };
+    );
 }(jQuery));
