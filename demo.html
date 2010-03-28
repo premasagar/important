@@ -18,17 +18,26 @@
     <script>
         // TESTS
         // jQuery.important.noConflict();
-        var elem = $('<div style="padding:1em"></div>').appendTo('body');
+        var elem = $('<div style="padding:1em;"></div>').appendTo('body');
         elem.important('css', {border:'1px solid red', padding:'10px'});
         console.log(jQuery.important, elem, elem.important, elem.attr('style'));
         elem.css({border:'1px solid green'}, true);
-        console.log(elem.attr('style'));
-        console.log(elem.css.toString());
-        console.log(elem.css('border'));
+        console.log("elem.attr('style')", elem.attr('style'));
+        console.log("elem.css.toString()", elem.css.toString());
+        console.log("elem.css('border')", elem.css('border'));
         elem.css('border', '1px solid red');
-        console.log(elem.css('border'));
+        console.log("elem.css('border')", elem.css('border'));
         elem.css('border', '1px solid red', true);
-        console.log(elem.css('border'));
+        console.log("elem.css('border')", elem.css('border'));
+        console.log("elem.important('style')", elem.important('style'));
+        /*
+        elem.important();
+        console.log(elem.attr('style'));
+        elem.important(false);
+        console.log(elem.attr('style'));
+        elem.important(true);
+        console.log(elem.attr('style'));
+        */
     </script>
 </body>
 </html>
