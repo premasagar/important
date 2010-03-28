@@ -63,8 +63,6 @@
         return elem.setAttribute('style', cssDeclaration(key, value, elem.getAttribute('style')));
     }
     */
-    
-    
     // Add !important to the end of CSS rules, except to those that already have it
     function toImportant(rulesets, makeImportant){
         // Cache regular expression
