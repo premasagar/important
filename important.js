@@ -30,17 +30,17 @@
 */
 (function($){
 
-    // create CSS text from key & value, optionally inserting it into the supplied CSS rule
+    // create CSS text from property & value, optionally inserting it into the supplied CSS rule
     // e.g. declaration('width', '50%', 'margin:2em; width:auto;');
-    function cssDeclaration(key, value, rules){ // if value === null, then remove from style; if style then merge with that
+    function cssDeclaration(property, value, rules){ // if value === null, then remove from style; if style then merge with that
         var declaration = (value !== null) ?
-            key + ':' + value + ' !important;' :
+            property + ':' + value + ' !important;' :
             '';
             
         rules = rules || '';
         
-        if (rules.toLowerCase().indexOf(key.toLowerCase()) !== -1){
-            rules = rules.replace(new RegExp(key + '\\s*:\\s*[^;]*(;|$)', 'i'), declaration);
+        if (rules.toLowerCase().indexOf(property.toLowerCase()) !== -1){
+            rules = rules.replace(new RegExp(property + '\\s*:\\s*[^;]*(;|$)', 'i'), declaration);
         }
         else {
             rules = $.trim(rules); // TODO: replace with native JS trim
@@ -59,8 +59,8 @@
     // Native JS function for inserting !important rules into an element
     // Not required when jQuery(elem).important is available
     /*
-    function insertDeclaration(elem, key, value){
-        return elem.setAttribute('style', cssDeclaration(key, value, elem.getAttribute('style')));
+    function insertDeclaration(elem, property, value){
+        return elem.setAttribute('style', cssDeclaration(property, value, elem.getAttribute('style')));
     }
     */
     // Add !important to the end of CSS rules, except to those that already have it
@@ -100,24 +100,24 @@
         replacement = $.each(
 	        {
 	            css:
-                    function(key, value){
+                    function(property, value){
 	                    var
 	                        rulesHash = {},
 	                        elem = $(this),
 	                        rules = elem.attr('style');
 	
 	                    // Create object, if arg is a string
-	                    if (typeof key === 'string'){
-		                    rulesHash[key] = value;
+	                    if (typeof property === 'string'){
+		                    rulesHash[property] = value;
 	                    }
-	                    else if (typeof key === 'object'){
-	                        rulesHash = key;
+	                    else if (typeof property === 'object'){
+	                        rulesHash = property;
 	                    }
 	                    else {
 	                        return elem;
 	                    }
-	                    $.each(rulesHash, function(key, value){
-	                        rules = cssDeclaration(key, value, rules);
+	                    $.each(rulesHash, function(property, value){
+	                        rules = cssDeclaration(property, value, rules);
 	                    });
 	                    return elem.attr('style', rules);
                     }
@@ -157,7 +157,8 @@
 	$.fn.important = function(method){
         var
             elem = $(this),
-            args = $.makeArray(arguments).concat(true);
+            args = $.makeArray(arguments).concat(true),
+            property;
         
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
         if (typeof method === 'undefined' || typeof method === 'boolean'){
@@ -167,15 +168,23 @@
             );
         }
         else if (typeof method === 'object'){
-            method = 'css';
+            args.unshift('css');
+            return elem.important.apply(this, args);
         }
-        else {
-            args = args.slice(1);
+        else if (typeof method === 'string'){
+            if ($.isFunction(wrapper[method])){
+                args = args.slice(1);
+                wrapper[method].apply(elem, args);
+            }
+            else if (typeof args[1] !== 'undefined'){
+                property = method;
+                elem.attr(
+                    'style',
+                    $.important.declaration(property, args[1])
+                );
+            }
         }
-        
-        if (wrapper[method]){
-            wrapper[method].apply(elem, args);
-        }        
+               
         return elem;
     };
     
@@ -208,7 +217,9 @@
                     $.fn[method] = fn;
                 });
                 return replacement;
-            }
+            },
+            
+            declaration: cssDeclaration
         }
     );
 }(jQuery));

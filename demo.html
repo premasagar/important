@@ -7,37 +7,73 @@
     <script src=important.js></script>
     
     <style>
-        /*
-        */
+        #elem {
+            border:1em solid #ccc;
+            background-color: #333;
+            color:white;
+        }
     </style>
 </head>
 
 <body>
     <h1>!important</h1>
     
+    <div id=controls>
+        <button id=cmd-toImportant>
+            $(elem).important();
+        </button>
+        <button id=cmd-notImportant>
+            $(elem).important(false);
+        </button>
+    </div>
+    
+    <div id=elem style=width:1%;padding:0;>
+        <p>This is an element with id <code>elem</code>.</p>
+        <p>The containing document has an inline style element with id <code>style</code>.</p>
+        <p>
+            <pre><code>
+                $('#elem').important(); // adds the !important statement to all of this element's inline styles
+                
+                $('#elem').important(false); // removes the !important statement from all of this element's inline styles
+                
+                $('#elem').important({padding:'1em'}) ===
+                    $('#elem').css({padding:'1em'}); // add an inline style, using the !important statement. This will override any existing CSS properties of this type.
+                
+                // TO BE IMPLEMENTED
+                $('#elem').important('width', '1.62em') ===
+                    $('#elem').width('1.62em', true); // do $('#elem').width('1.62em') using the !important statement
+                
+                // and similar, for other native jQuery methods:
+                $('#elem').important('height');
+                $('#elem').important('show');
+                $('#elem').important('hide');
+                $('#elem').important('animate');
+                
+                $('#elem').important('padding'); // make this one inline style property !important
+                
+                $('#elem').important('padding', false); // make this one inline style property not !important
+                
+                // !important === sudo
+            </code></pre>
+        </p>
+    </div>
+    
     <script>
         // TESTS
         // jQuery.important.noConflict();
-        var elem = $('<div style="padding:1em;"></div>').appendTo('body');
-        elem.important('css', {border:'1px solid red', padding:'10px'});
-        console.log(jQuery.important, elem, elem.important, elem.attr('style'));
-        elem.css({border:'1px solid green'}, true);
-        console.log("elem.attr('style')", elem.attr('style'));
-        console.log("elem.css.toString()", elem.css.toString());
-        console.log("elem.css('border')", elem.css('border'));
-        elem.css('border', '1px solid red');
-        console.log("elem.css('border')", elem.css('border'));
-        elem.css('border', '1px solid red', true);
-        console.log("elem.css('border')", elem.css('border'));
-        console.log("elem.important('style')", elem.important('style'));
-        /*
-        elem.important();
-        console.log(elem.attr('style'));
-        elem.important(false);
-        console.log(elem.attr('style'));
-        elem.important(true);
-        console.log(elem.attr('style'));
-        */
+        var elem = $('#elem');
+        $('#elem')
+            .important({width:'61.8%', padding:'1.62%'});
+        
+        $('#cmd-toImportant')
+            .click(function(){
+                elem.important();
+            });        
+        
+        $('#cmd-notImportant')
+            .click(function(){
+                elem.important(false);
+            });
     </script>
 </body>
 </html>
