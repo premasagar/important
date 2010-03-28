@@ -180,7 +180,7 @@
                 property = method;
                 elem.attr(
                     'style',
-                    $.important.declaration(property, args[1])
+                    $.important.declaration(property, elem.css(property), elem.attr('style'))
                 );
             }
         }
