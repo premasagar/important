@@ -59,22 +59,22 @@
     // Native JS function for inserting !important rules into an element
     // Not required when jQuery(elem).important is available
     /*
-    function insertDeclaration(key, value, elem){
+    function insertDeclaration(elem, key, value){
         return elem.setAttribute('style', cssDeclaration(key, value, elem.getAttribute('style')));
     }
     */
     
     
     // Add !important to the end of CSS rules, except to those that already have it
-    function toImportant(rulesets, invertIfFalse){
+    function toImportant(rulesets, makeImportant){
         // Cache regular expression
         var re = toImportant.re;
         if (!re){
             re = toImportant.re =
-                /\s*(!important)?[\s\r\t\n]*;/g;
+                /\s*(! ?important)?[\s\r\t\n]*;/g;
                 // TODO: Make this regexp handle missing semicolons at the end of a ruleset
         }
-        if (invertIfFalse === false){
+        if (makeImportant === false){
             return rulesets.replace(re, ';');
         }
         return rulesets.replace(re, function($0, $1){
@@ -82,7 +82,7 @@
         });
     }
     
-    function htmlStylesToImportant(html, invertIfFalse){
+    function htmlStylesToImportant(html, makeImportant){
         // Cache regular expression
         var re = htmlStylesToImportant.re;
         if (!re){
@@ -90,7 +90,7 @@
                 /(?=<style[^>]*>)([\w\W]*?)(?=<\/style>)/g;
         }
         return html.replace(re, function($0, rulesets){
-            return toImportant(rulesets, invertIfFalse);
+            return toImportant(rulesets, makeImportant);
         });
     }
     
@@ -162,7 +162,13 @@
             args = $.makeArray(arguments).concat(true);
         
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
-        if (typeof method === 'object'){
+        if (typeof method === 'undefined' || typeof method === 'boolean'){
+            return elem.attr(
+                'style',
+                $.important(elem.attr('style'), method)
+            );
+        }
+        else if (typeof method === 'object'){
             method = 'css';
         }
         else {
@@ -187,13 +193,14 @@
         function(){
             var
                 args = $.makeArray(arguments),
-                invertIfFalse;
+                makeImportant;
             
-            if (typeof args[0] !== 'undefined' && (typeof args[1] === 'undefined' || args[1] === false)){
-                invertIfFalse = args[1];
+            if (typeof args[0] !== 'undefined' && (typeof args[1] === 'undefined' || typeof args[1] === 'boolean')){
+                makeImportant = (args[1] !== false);
+                
                 return (/<\w+.*>/).test(args[0]) ?
-                     htmlStylesToImportant(args[0], invertIfFalse) :
-                     toImportant(args[0], invertIfFalse);
+                     htmlStylesToImportant(args[0], makeImportant) :
+                     toImportant(args[0], makeImportant);
             }
         },
         {
