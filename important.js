@@ -5,7 +5,7 @@
 *   github.com/premasagar/mishmash/tree/master/important/
 *
 *//*
-    css !important manipulator (native JS + jQuery plugin)
+    css !important manipulator (jQuery plugin)
 
     by Premasagar Rose
         dharmafly.com
@@ -17,10 +17,10 @@
 
 *//*
     creates methods
-        jQuery(elem).important(method, [args])
-        jQuery.important.noConflict
-    
-    overrides native jQuery methods for css(), width(), height(), animate(), show() and hide(), allowing an optional last argument of boolean true, to pass the request through the !important function
+        jQuery.important()
+        jQuery(elem).important()
+        
+    optionally modified the native jQuery CSS methods: css(), width(), height(), animate(), show() and hide(), allowing an optional last argument of boolean true, to pass the request through the !important function
     
     use jQuery.important.noConflict() to revert back to the native jQuery methods, and returns the overriding methods
     
@@ -36,7 +36,7 @@
     
         // return a regular expression of a declaration, with the backreferences as the CSS property and the value
         function regexDeclaration(property){
-            return new RegExp('(' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
+            return new RegExp('[\\^\\s;](' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
         }
         function find(property, rules){
             return rules.match(regexDeclaration(property));

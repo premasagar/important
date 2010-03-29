@@ -6,11 +6,25 @@
     <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
     <script src=important.js></script>
     
-    <style>
+    <style id=style>
+        body {
+            padding:0;
+            margin:0;
+        }
+    
         #elem {
+            background-color:#333 !important;
+            color:white !important;
+            
             border:1em solid #ccc;
-            background-color: #333;
-            color:white;
+            overflow:auto;
+            width:100%;
+            padding:1.62%;
+        }
+        
+        #current-style {
+            background-color:#c33;
+            color:#ffc;
         }
     </style>
 </head>
@@ -22,57 +36,119 @@
         <button id=cmd-toImportant>
             $(elem).important();
         </button>
+        
         <button id=cmd-notImportant>
             $(elem).important(false);
         </button>
+        
+        <button id=cmd-noConflict>
+            $.important.noConflict();
+        </button>
+        
+        <button id=cmd-makeImportant>
+            $(elem).important('background-color');
+        </button>
+        
+        <button id=cmd-makeNotImportant>
+            $(elem).important('background-color', false);
+        </button>
+        
+        <button id=cmd-addStyle>
+            $(elem).css({'background-color':'blue', color:'yellow'}, true);
+        </button>
+        
+        <button id=cmd-addStyle2>
+            $(elem).important({'background-color':'black', color:'green'});
+        </button>
     </div>
     
-    <div id=elem style=width:1%;padding:0;>
+    <div id=elem style=background-color:blue;color:yellow;>
+        <strong>Current style:</strong> <code id=current-style></code>
+    
         <p>This is an element with id <code>elem</code>.</p>
         <p>The containing document has an inline style element with id <code>style</code>.</p>
         <p>
             <pre><code>
-                $('#elem').important(); // adds the !important statement to all of this element's inline styles
-                
-                $('#elem').important(false); // removes the !important statement from all of this element's inline styles
-                
-                $('#elem').important({padding:'1em'}) ===
-                    $('#elem').css({padding:'1em'}); // add an inline style, using the !important statement. This will override any existing CSS properties of this type.
-                
-                // TO BE IMPLEMENTED
-                $('#elem').important('width', '1.62em') ===
-                    $('#elem').width('1.62em', true); // do $('#elem').width('1.62em') using the !important statement
-                
-                // and similar, for other native jQuery methods:
-                $('#elem').important('height');
-                $('#elem').important('show');
-                $('#elem').important('hide');
-                $('#elem').important('animate');
-                
-                $('#elem').important('padding'); // make this one inline style property !important
-                
-                $('#elem').important('padding', false); // make this one inline style property not !important
-                
-                // !important === sudo
+$('#elem').important(); // adds the !important statement to all of this element's inline styles
+
+$('#elem').important(false); // removes the !important statement from all of this element's inline styles
+
+$('#elem').important({padding:'1em'}) ===
+    $('#elem').css({padding:'1em'}); // add an inline style, using the !important statement. This will override any existing CSS properties of this type.
+
+// TO BE IMPLEMENTED
+$('#elem').important('width', '1.62em') ===
+    $('#elem').width('1.62em', true); // do $('#elem').width('1.62em') using the !important statement
+
+// and similar, for other native jQuery methods:
+$('#elem').important('height');
+$('#elem').important('show');
+$('#elem').important('hide');
+$('#elem').important('animate');
+
+$('#elem').important('padding'); // make this one inline style property !important
+
+$('#elem').important('padding', false); // make this one inline style property not !important
+
+//  !important === sudo
             </code></pre>
         </p>
     </div>
     
     <script>
         // TESTS
+        var
+            elem = $('#elem'),
+            report = $('#current-style');
+        
         // jQuery.important.noConflict();
-        var elem = $('#elem');
-        $('#elem')
-            .important({width:'61.8%', padding:'1.62%'});
+        function reportStyleAttribute(){
+            report
+                .text(elem.attr('style'));
+        }
+        
+        reportStyleAttribute();
         
         $('#cmd-toImportant')
             .click(function(){
                 elem.important();
-            });        
+                reportStyleAttribute();
+            });
         
         $('#cmd-notImportant')
             .click(function(){
                 elem.important(false);
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-noConflict')
+            .click(function(){
+                $.noConflict();
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-makeImportant')
+            .click(function(){
+                elem.important('background-color');
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-makeNotImportant')
+            .click(function(){
+                elem.important('background-color', false);
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-addStyle')
+            .click(function(){
+                $(elem).css({'background-color':'blue', color:'yellow'}, true);
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-addStyle2')
+            .click(function(){
+                $(elem).important({'background-color':'black', color:'green'});
+                reportStyleAttribute();
             });
     </script>
 </body>
