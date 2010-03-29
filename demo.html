@@ -6,25 +6,29 @@
     <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
     <script src=important.js></script>
     
-    <style id=style>
+    <style>
         body {
             padding:0;
             margin:0;
         }
     
-        #elem {
-            background-color:#333 !important;
-            color:white !important;
-            
+        #elem {            
             border:1em solid #ccc;
             overflow:auto;
             width:100%;
             padding:1.62%;
         }
         
-        #current-style {
+        #style-inner, #current-style {
             background-color:#c33;
             color:#ffc;
+        }
+    </style>
+    
+    <style id=style>
+        #elem {
+            background-color:#333 !important;
+            color:white !important;
         }
     </style>
 </head>
@@ -60,9 +64,19 @@
         <button id=cmd-addStyle2>
             $(elem).important({'background-color':'black', color:'green'});
         </button>
+        
+        <button id=cmd-styleToImportant>
+            $(style).important();
+        </button>
+        
+        <button id=cmd-styleToNotImportant>
+            $(style).important(false);
+        </button>
     </div>
     
     <div id=elem style=background-color:blue;color:yellow;>
+        <strong>Style element:</strong> <code id=style-inner></code>
+        <br>
         <strong>Current style:</strong> <code id=current-style></code>
     
         <p>This is an element with id <code>elem</code>.</p>
@@ -99,12 +113,16 @@ $('#elem').important('padding', false); // make this one inline style property n
         // TESTS
         var
             elem = $('#elem'),
-            report = $('#current-style');
+            report = $('#current-style'),
+            style = $('#style'),
+            styleReport = $('#style-inner');
         
         // jQuery.important.noConflict();
         function reportStyleAttribute(){
             report
                 .text(elem.attr('style'));
+            styleReport
+                .text(style.html());
         }
         
         reportStyleAttribute();
@@ -148,6 +166,18 @@ $('#elem').important('padding', false); // make this one inline style property n
         $('#cmd-addStyle2')
             .click(function(){
                 $(elem).important({'background-color':'black', color:'green'});
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-styleToImportant')
+            .click(function(){
+                $(style).important();
+                reportStyleAttribute();
+            });
+        
+        $('#cmd-styleToNotImportant2')
+            .click(function(){
+                $(style).important(false);
                 reportStyleAttribute();
             });
     </script>

@@ -244,6 +244,7 @@
             property, makeImportant, fn;
         
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
+        // TODO: Check for elem.attr('nodeName') === 'style' and make innerHTML CSS go !important
         if (typeof method === 'undefined' || typeof method === 'boolean'){
             return elem.attr(
                 'style',
