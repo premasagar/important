@@ -120,7 +120,7 @@
     var
         important = false,
         original = {},
-        wrapper = {},
+        controller = {},
         replacement = $.each(
 	        {
 	            css:
@@ -161,7 +161,7 @@
 	            original[method] = $.fn[method];
 	            fn.overridden = true; // for detecting replacementn state
 	        
-	            wrapper[method] = function(){
+	            controller[method] = function(){
 	                var
 	                    args = $.makeArray(arguments),
 	                    lastArg = args[args.length-1],
@@ -182,7 +182,7 @@
 	    );
 	
 	// Override the native jQuery methods with new methods
-	$.extend($.fn, wrapper);
+	$.extend($.fn, controller);
 	    
 	
 	// jQuery(elem).important()
@@ -204,9 +204,9 @@
             return elem.important.apply(this, args);
         }
         else if (typeof method === 'string'){
-            if ($.isFunction(wrapper[method])){
+            if ($.isFunction(controller[method])){
                 args = args.slice(1);
-                wrapper[method].apply(elem, args);
+                controller[method].apply(elem, args);
             }
             // switch the !important statement on or off for a particular property in an element's inline styles - but instead of elem.css(property), they should directly look in the style attribute
             // e.g. $(elem).important('padding');
