@@ -33,24 +33,45 @@
     // create CSS text from property & value, optionally inserting it into the supplied CSS rule
     // e.g. declaration('width', '50%', 'margin:2em; width:auto;');
     function cssDeclaration(property, value, rules){ // if value === null, then remove from style; if style then merge with that
-        var declaration = (value !== null) ?
-            property + ':' + value + ' !important;' :
-            '';
-            
-        rules = rules || '';
-        
-        if (rules.toLowerCase().indexOf(property.toLowerCase()) !== -1){
-            rules = rules.replace(new RegExp(property + '\\s*:\\s*[^;]*(;|$)', 'i'), declaration);
+    
+        // return a regular expression of a declaration, with the backreferences as the CSS property and the value
+        function regexDeclaration(property){
+            return new RegExp('(' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
         }
-        else {
-            rules = $.trim(rules); // TODO: replace with native JS trim
+        function find(property, rules){
+            return rules.match(regexDeclaration(property));
+        }
+    
+        var oldDeclaration, newDeclaration, makeImportant;
+        
+        rules = rules || '';
+        oldDeclaration = find(property, rules);
+            
+        if (value === null){
+            newDeclaration = '';
+        }
+        else if (typeof value === 'string'){
+            newDeclaration = property + ':' + value + ' !important;';
+        }
+        
+        if (oldDeclaration){
+            if (typeof value === 'boolean'){
+                makeImportant = value;
+                newDeclaration = $.important(property + ':' + oldDeclaration[2], makeImportant);
+            }
+            
+            rules = rules.replace(oldDeclaration[0], newDeclaration);
+        }
+        
+        else if (typeof newDeclaration !== 'undefined'){
+            rules = $.trim(rules);
             if (rules !== ''){
 	            if (rules.slice(-1) !== ';'){
 		            rules += ';';
 	            }
 	            rules += ' ';
             }
-            rules += declaration;
+            rules += newDeclaration;
         }
         return rules;
     }
@@ -63,6 +84,8 @@
         return elem.setAttribute('style', cssDeclaration(property, value, elem.getAttribute('style')));
     }
     */
+    
+    
     // Add !important to the end of CSS rules, except to those that already have it
     function toImportant(rulesets, makeImportant){
         // Cache regular expression
@@ -95,6 +118,7 @@
     // **
     
     var
+        important = false,
         original = {},
         wrapper = {},
         replacement = $.each(
@@ -140,11 +164,19 @@
 	            wrapper[method] = function(){
 	                var
 	                    args = $.makeArray(arguments),
+	                    lastArg = args[args.length-1],
 	                    elem = $(this);
-	                    
-	                return (args[args.length-1] === true) ?
-                        fn.apply(elem, args.slice(0,-1)) :
-                        original[method].apply(elem, args); 
+	                
+	                // boolean true passed as the last argument
+	                if (lastArg === true){
+	                    return fn.apply(elem, args.slice(0,-1));
+	                }
+	                // $.important() === true && boolean false not passed
+	                else if (important && lastArg !== false){
+	                    return fn.apply(elem, args);
+	                }
+	                // apply original, native jQuery method
+	                original[method].apply(elem, args);
 	            };
 	        }
 	    );
@@ -158,7 +190,7 @@
         var
             elem = $(this),
             args = $.makeArray(arguments).concat(true),
-            property;
+            property, makeImportant;
         
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
         if (typeof method === 'undefined' || typeof method === 'boolean'){
@@ -176,12 +208,14 @@
                 args = args.slice(1);
                 wrapper[method].apply(elem, args);
             }
-            else if (typeof args[1] !== 'undefined'){
+            // switch the !important statement on or off for a particular property in an element's inline styles - but instead of elem.css(property), they should directly look in the style attribute
+            // e.g. $(elem).important('padding');
+            // e.g. $(elem).important('padding', false);
+            else if (typeof args[1] === 'undefined' || typeof args[1] === 'boolean'){
                 property = method;
-                elem.attr(
-                    'style',
-                    $.important.declaration(property, elem.css(property), elem.attr('style'))
-                );
+                makeImportant = (args[1] !== false);
+                
+                elem.attr('style', cssDeclaration(property, makeImportant, elem.attr('style')));
             }
         }
                
@@ -202,13 +236,21 @@
                 args = $.makeArray(arguments),
                 makeImportant;
             
-            if (typeof args[0] !== 'undefined' && (typeof args[1] === 'undefined' || typeof args[1] === 'boolean')){
-                makeImportant = (args[1] !== false);
-                
-                return (/<\w+.*>/).test(args[0]) ?
-                     htmlStylesToImportant(args[0], makeImportant) :
-                     toImportant(args[0], makeImportant);
+            if (typeof args[0] === 'string'){
+                if (typeof args[1] === 'undefined' || typeof args[1] === 'boolean'){
+                    makeImportant = (args[1] !== false);
+                    
+                    return (/<\w+.*>/).test(args[0]) ?
+                         htmlStylesToImportant(args[0], makeImportant) :
+                         toImportant(args[0], makeImportant);
+                }
             }
+            
+            else if (typeof args[0] === 'boolean'){
+                important = args[0];
+            }
+            
+            return important;
         },
         {
             // release native jQuery methods back to their original versions and return overriding methods
