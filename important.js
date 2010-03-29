@@ -129,7 +129,7 @@
 	                        rulesHash = {},
 	                        elem = $(this),
 	                        rules = elem.attr('style');
-	
+	                    
 	                    // Create object, if arg is a string
 	                    if (typeof property === 'string'){
 		                    rulesHash[property] = value;
@@ -183,6 +183,57 @@
 	
 	// Override the native jQuery methods with new methods
 	$.extend($.fn, controller);
+    
+    
+    // jQuery.important
+    
+    // TODO:
+    /*
+    $.important('margin:0', 'padding:0; margin:auto;');
+    
+    */
+    $.important = $.extend(
+        function(){
+            var
+                args = $.makeArray(arguments),
+                makeImportant, cacheImportant;
+            
+            if (typeof args[0] === 'string'){
+                if (typeof args[1] === 'undefined' || typeof args[1] === 'boolean'){
+                    makeImportant = (args[1] !== false);
+                    
+                    return (/<\w+.*>/).test(args[0]) ?
+                         htmlStylesToImportant(args[0], makeImportant) :
+                         toImportant(args[0], makeImportant);
+                }
+            }
+            
+            // If a function is passed, then execute it while the !important flag is set to true
+            else if ($.isFunction(args[0])){
+                cacheImportant = important;
+                important = true;
+                args[0].call(this);
+                important = cacheImportant;
+            }
+            
+            else if (typeof args[0] === 'boolean'){
+                important = args[0];
+            }
+            
+            return important;
+        },
+        {
+            // release native jQuery methods back to their original versions and return overriding methods
+            noConflict: function(){
+                $.each(original, function(method, fn){
+                    $.fn[method] = fn;
+                });
+                return replacement;
+            },
+            
+            declaration: cssDeclaration
+        }
+    );
 	    
 	
 	// jQuery(elem).important()
@@ -190,7 +241,7 @@
         var
             elem = $(this),
             args = $.makeArray(arguments).concat(true),
-            property, makeImportant;
+            property, makeImportant, fn;
         
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
         if (typeof method === 'undefined' || typeof method === 'boolean'){
@@ -218,50 +269,17 @@
                 elem.attr('style', cssDeclaration(property, makeImportant, elem.attr('style')));
             }
         }
+        // pass a function, which will be executed while the !important flag is set to true
+        /* e.g.
+            elem.important(function(){
+                $(this).css('height', 'auto');
+            });
+        */
+        else if ($.isFunction(method)){
+            fn = method;
+            $.important.call(this, fn);
+        }
                
         return elem;
     };
-    
-    
-    // jQuery.important
-    
-    // TODO:
-    /*
-    $.important('margin:0', 'padding:0; margin:auto;');
-    
-    */
-    $.important = $.extend(
-        function(){
-            var
-                args = $.makeArray(arguments),
-                makeImportant;
-            
-            if (typeof args[0] === 'string'){
-                if (typeof args[1] === 'undefined' || typeof args[1] === 'boolean'){
-                    makeImportant = (args[1] !== false);
-                    
-                    return (/<\w+.*>/).test(args[0]) ?
-                         htmlStylesToImportant(args[0], makeImportant) :
-                         toImportant(args[0], makeImportant);
-                }
-            }
-            
-            else if (typeof args[0] === 'boolean'){
-                important = args[0];
-            }
-            
-            return important;
-        },
-        {
-            // release native jQuery methods back to their original versions and return overriding methods
-            noConflict: function(){
-                $.each(original, function(method, fn){
-                    $.fn[method] = fn;
-                });
-                return replacement;
-            },
-            
-            declaration: cssDeclaration
-        }
-    );
 }(jQuery));
