@@ -2,7 +2,7 @@
 <html lang=en>
 <head>
     <meta charset=utf-8 />
-    <title>!important</title>
+    <title>!importantjs</title>
     <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
     <script src=important.js></script>
     
@@ -24,15 +24,63 @@
             padding:0;
             margin:0;
         }
-    
-        #elem {            
-            border:1em solid #ccc;
-            overflow:auto;
-            width:100%;
-            padding:1.62%;
+        
+        h1 {
+            font-size:1.62em;
+            font-weight:bold;
+            padding:0;
+            margin:0;
+            position:fixed;
+            top:1.62%;
+            left:1.38%;
+            z-index:2;
+            font-family:courier, monospace;
+        }
+        h1 .important {
+            color:#c33;
+        }
+        h1 .js {
+            color:#777;
         }
         
-        #style-csstext, #elem-attr {
+        #contents {
+            position:relative;
+        }
+    
+        #controls {
+            width:56.8%;
+            padding:0 0 0.62%;
+            float:right;
+        }
+        #controls button {
+            font-size:1em;
+            width:100%;
+            text-align:left;
+            font-family:courier, monospace;
+            font-weight:bold;
+            color:white;
+            background-color:black;
+            border:1px solid white;
+            padding:1%;
+            margin:0.38% 0;
+            cursor:pointer;
+        }
+        #controls button:hover {
+            color:#ffc;
+            background-color:#c33;
+        }
+    
+        #elem {            
+            border:0.62em solid #ccc;
+            overflow:auto;
+            width:34.2%;
+            padding:1.62% 1.62% 0.62%;
+            position:fixed;
+            top:0;
+            left:0;
+        }
+        
+        #xstyle-csstext, #xelem-attr {
             background-color:#c33;
             color:#ffc;
         }
@@ -40,45 +88,12 @@
 </head>
 
 <body>
-    <h1>!important</h1>
-    
-    <div id=controls>
-        <button id=cmd-toImportant>
-            $(elem).important();
-        </button>
-        
-        <button id=cmd-notImportant>
-            $(elem).important(false);
-        </button>
-        
-        <button id=cmd-noConflict>
-            $.important.noConflict();
-        </button>
-        
-        <button id=cmd-makeImportant>
-            $(elem).important('background-color');
-        </button>
-        
-        <button id=cmd-makeNotImportant>
-            $(elem).important('background-color', false);
-        </button>
-        
-        <button id=cmd-addStyle>
-            $(elem).css({'background-color':'blue', color:'yellow'}, true);
-        </button>
-        
-        <button id=cmd-addStyle2>
-            $(elem).important({'background-color':'black', color:'green'});
-        </button>
-        
-        <button id=cmd-styleToImportant>
-            $(style).important();
-        </button>
-        
-        <button id=cmd-styleToNotImportant>
-            $(style).important(false);
-        </button>
-    </div>
+    <h1><span class=important>!important</span><span class=js>js</span></h1>
+
+    <!-- #contents -->
+    <div id=contents>
+
+
 
 <!-- #elem -->
 <div id=elem style="
@@ -94,7 +109,49 @@
 &quot;&gt;&lt;/div&gt;
 </code></pre>
 </div>
-<!-- end #elem -->
+<!-- end #elem -->    
+    
+    
+    
+        <div id=controls>
+            <button id=cmd-toImportant>
+                $(elem).important();
+            </button>
+            
+            <button id=cmd-notImportant>
+                $(elem).important(false);
+            </button>
+            
+            <button id=cmd-noConflict>
+                $.important.noConflict();
+            </button>
+            
+            <button id=cmd-makeImportant>
+                $(elem).important('background-color');
+            </button>
+            
+            <button id=cmd-makeNotImportant>
+                $(elem).important('background-color', false);
+            </button>
+            
+            <button id=cmd-addStyle>
+                $(elem).css({'background-color':'blue', color:'yellow'}, true);
+            </button>
+            
+            <button id=cmd-addStyle2>
+                $(elem).important({'background-color':'black', color:'green'});
+            </button>
+            
+            <button id=cmd-styleToImportant>
+                $(style).important();
+            </button>
+            
+            <button id=cmd-styleToNotImportant>
+                $(style).important(false);
+            </button>
+        </div>
+    </div>
+    <!-- end #contents -->
 
     
     <!--
