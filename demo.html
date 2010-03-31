@@ -6,6 +6,19 @@
     <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
     <script src=important.js></script>
     
+
+<!-- document-level !important rules for #elem -->
+<style id=style>
+#elem {
+    background-color:#333 !important;
+    color:white !important;
+}
+</style>
+<!-- end document-level !important rules for #elem -->
+    
+    
+    
+    <!-- general styling for demo -->
     <style>
         body {
             padding:0;
@@ -19,16 +32,9 @@
             padding:1.62%;
         }
         
-        #style-inner, #current-style {
+        #style-csstext, #elem-attr {
             background-color:#c33;
             color:#ffc;
-        }
-    </style>
-    
-    <style id=style>
-        #elem {
-            background-color:#333 !important;
-            color:white !important;
         }
     </style>
 </head>
@@ -73,8 +79,25 @@
             $(style).important(false);
         </button>
     </div>
+
+<!-- #elem -->
+<div id=elem style="
+    background-color:blue;
+    color:yellow;
+">
+<pre><code id=style-outer>
+&lt;style id=style&gt;<code id=style-csstext></code>&lt;/style&gt;
+</code></pre>
+<pre><code id=elem-outer>
+&lt;div id=elem style=&quot;
+<code id=elem-attr></code>
+&quot;&gt;&lt;/div&gt;
+</code></pre>
+</div>
+<!-- end #elem -->
+
     
-    <div id=elem style=background-color:blue;color:yellow;>
+    <!--
         <strong>Style element:</strong> <code id=style-inner></code>
         <br>
         <strong>Current style:</strong> <code id=current-style></code>
@@ -107,78 +130,79 @@ $('#elem').important('padding', false); // make this one inline style property n
 //  !important === sudo
             </code></pre>
         </p>
-    </div>
+    -->
     
     <script>
         // TESTS
         var
             elem = $('#elem'),
-            report = $('#current-style'),
+            elemReport = $('#elem-attr'),
             style = $('#style'),
-            styleReport = $('#style-inner');
+            styleReport = $('#style-csstext'),
+            update = (function(){
+                return function(){
+                    elemReport
+                        .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
+                    styleReport
+                        .text(style.html());
+                }
+            }());
         
-        // jQuery.important.noConflict();
-        function reportStyleAttribute(){
-            report
-                .text(elem.attr('style'));
-            styleReport
-                .text(style.html());
-        }
+        update();
         
-        reportStyleAttribute();
         
         $('#cmd-toImportant')
             .click(function(){
                 elem.important();
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-notImportant')
             .click(function(){
                 elem.important(false);
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-noConflict')
             .click(function(){
                 $.noConflict();
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-makeImportant')
             .click(function(){
                 elem.important('background-color');
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-makeNotImportant')
             .click(function(){
                 elem.important('background-color', false);
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-addStyle')
             .click(function(){
                 $(elem).css({'background-color':'blue', color:'yellow'}, true);
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-addStyle2')
             .click(function(){
                 $(elem).important({'background-color':'black', color:'green'});
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-styleToImportant')
             .click(function(){
                 $(style).important();
-                reportStyleAttribute();
+                update();
             });
         
         $('#cmd-styleToNotImportant2')
             .click(function(){
                 $(style).important(false);
-                reportStyleAttribute();
+                update();
             });
     </script>
 </body>
