@@ -118,17 +118,30 @@
     background-color:blue;
     color:yellow;
 ">
+
 <pre><code id=style-outer>
 &lt;style id=style&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
 </code></pre>
+
 <pre><code id=elem-outer>
 &lt;div id=elem style=&quot;
 <code id=elem-attr class=colours></code>
 &quot;&gt;&lt;/div&gt;
 </code></pre>
+
+<pre><code id=var-elem>
+&lt;script&gt;
+    elem.style.backgroundColor = <code id=var-background-color class=colours></code>;
+    elem.style.color = <code id=var-color class=colours></code>;
+    elem[0].style.backgroundColor = <code id=var-style-background-color class=colours></code>; 
+    elem[0].style.color = <code id=var-style-color class=colours></code>;   
+    elem[0].cssText = <code id=var-cssText class=colours></code>;
+&lt;/script&gt;
+</code></pre>
+
 </div>
 <!-- end #elem -->    
-    
+
     
     
         <div id=controls>
@@ -145,15 +158,29 @@
     // TESTS
     var
         elem = $('#elem'),
-        elemReport = $('#elem-attr'),
         style = $('#style'),
-        styleReport = $('#style-csstext'),
+        
         update = (function(){
             return function(){
-                elemReport
+                $('#elem-attr')
                     .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
-                styleReport
+                $('#style-csstext')
                     .text(style.html());
+                    
+                $('#var-background-color')
+                    .text(elem.css('background-color'));
+                    
+                $('#var-color')
+                    .text(elem.css('color'));
+                    
+                $('#var-style-background-color')
+                    .text(elem[0].style.backgroundColor);
+                    
+                $('#var-style-color')
+                    .text(elem[0].style.color);
+                    
+                $('#var-cssText')
+                    .text(elem[0].cssText);
             }
         }()),
         tests = [
