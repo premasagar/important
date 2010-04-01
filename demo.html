@@ -10,7 +10,7 @@
 <!-- document-level !important rules for #elem -->
 <style id=style>
 #elem {
-    background-color:#333 !important;
+    background-color:midnightblue !important;
     color:white !important;
 }
 </style>
@@ -95,8 +95,10 @@
         }
         
         #elem code.colours {
+            /*
             background-color:#c33;
             color:#ffc;
+            */
         }
     </style>
 </head>
@@ -115,8 +117,8 @@
 
 <!-- #elem -->
 <div id=elem style="
-    background-color:blue;
-    color:yellow;
+    background-color:orange;
+    color:seagreen;
 ">
 
 <pre><code id=style-outer>
@@ -160,24 +162,35 @@
         elem = $('#elem'),
         style = $('#style'),
         
+        elemCssBg = elem.css('background-color') || '',
+        elemCssColor = elem.css('color') || '',
+        
+        elemStyleBg = elem[0].style.backgroundColor || '',
+        elemStyleColor = elem[0].style.color || '',
+        
         update = (function(){
             return function(){
                 $('#elem-attr')
                     .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
+                    
                 $('#style-csstext')
                     .text(style.html());
                     
                 $('#var-background-color')
-                    .text(elem.css('background-color'));
+                    .text(elemCssBg)
+                    .css('background-color', elemCssBg);
                     
                 $('#var-color')
-                    .text(elem.css('color'));
+                    .text(elemCssColor)
+                    .css('color', elemCssColor);
                     
                 $('#var-style-background-color')
-                    .text(elem[0].style.backgroundColor);
+                    .text(elemStyleBg)
+                    .css('background-color', elemStyleBg);
                     
                 $('#var-style-color')
-                    .text(elem[0].style.color);
+                    .text(elemStyleColor)
+                    .css('color', elemStyleColor);
                     
                 $('#var-cssText')
                     .text(elem[0].cssText);
@@ -199,44 +212,44 @@
                 desc:"Make all the css properties in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.important('background-color');",
+                text:"elem.important('color');",
                 fn:function(){
-                    elem.important('background-color');
+                    elem.important('color');
                 },
-                desc:"Make the background-color property in the element's style attribute use the !important statement."
+                desc:"Make the color property in the element's style attribute use the !important statement."
             },
             {
-                text:"elem.important('background-color', false);",
+                text:"elem.important('color', false);",
                 fn:function(){
-                    elem.important('background-color', false);
+                    elem.important('color', false);
                 },
-                desc:"Make the background-color property in the element's style attribute not use the !important statement."
+                desc:"Make the color property in the element's style attribute not use the !important statement."
             },
             {
-                text:"$(elem).css({'background-color':'blue', color:'yellow'}, true);",
+                text:"elem.css({'background-color':'blue', color:'black'}, true);",
                 fn:function(){
-                    $(elem).css({'background-color':'blue', color:'yellow'}, true);
-                },
-                desc:""
-            },
-            {
-                text:"$(elem).important({'background-color':'black', color:'green'});",
-                fn:function(){
-                    $(elem).important({'background-color':'black', color:'green'});
+                    elem.css({'background-color':'blue', color:'black'}, true);
                 },
                 desc:""
             },
             {
-                text:'$(style).important();',
+                text:"elem.important({'background-color':'black', color:'green'});",
                 fn:function(){
-                    $(style).important();
+                    elem.important({'background-color':'black', color:'green'});
                 },
                 desc:""
             },
             {
-                text:'$(style).important(false);',
+                text:'style.important();',
                 fn:function(){
-                    $(style).important(false);
+                    style.important();
+                },
+                desc:""
+            },
+            {
+                text:'style.important(false);',
+                fn:function(){
+                    style.important(false);
                 },
                 desc:""
             },
