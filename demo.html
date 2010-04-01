@@ -94,7 +94,7 @@
             left:0;
         }
         
-        #xstyle-csstext, #xelem-attr {
+        #elem code.colours {
             background-color:#c33;
             color:#ffc;
         }
@@ -119,11 +119,11 @@
     color:yellow;
 ">
 <pre><code id=style-outer>
-&lt;style id=style&gt;<code id=style-csstext></code>&lt;/style&gt;
+&lt;style id=style&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
 </code></pre>
 <pre><code id=elem-outer>
 &lt;div id=elem style=&quot;
-<code id=elem-attr></code>
+<code id=elem-attr class=colours></code>
 &quot;&gt;&lt;/div&gt;
 </code></pre>
 </div>
@@ -132,65 +132,130 @@
     
     
         <div id=controls>
-            <button id=cmd-toImportant>
-                $(elem).important();
-            </button>
-            
-            <button id=cmd-notImportant>
-                $(elem).important(false);
-            </button>
-            
-            <button id=cmd-noConflict>
-                $.important.noConflict();
-            </button>
-            
-            <button id=cmd-makeImportant>
-                $(elem).important('background-color');
-            </button>
-            
-            <button id=cmd-makeNotImportant>
-                $(elem).important('background-color', false);
-            </button>
-            
-            <button id=cmd-addStyle>
-                $(elem).css({'background-color':'blue', color:'yellow'}, true);
-            </button>
-            
-            <button id=cmd-addStyle2>
-                $(elem).important({'background-color':'black', color:'green'});
-            </button>
-            
-            <button id=cmd-styleToImportant>
-                $(style).important();
-            </button>
-            
-            <button id=cmd-styleToNotImportant>
-                $(style).important(false);
-            </button>
+            <h2>Controls</h2>
+            <ul></ul>
         </div>
     </div>
     <!-- end #contents -->
 
+ 
     
-    <!--
-        <strong>Style element:</strong> <code id=style-inner></code>
-        <br>
-        <strong>Current style:</strong> <code id=current-style></code>
+    <script>
+(function(){
+    // TESTS
+    var
+        elem = $('#elem'),
+        elemReport = $('#elem-attr'),
+        style = $('#style'),
+        styleReport = $('#style-csstext'),
+        update = (function(){
+            return function(){
+                elemReport
+                    .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
+                styleReport
+                    .text(style.html());
+            }
+        }()),
+        tests = [
+            {
+                text:'elem.important();',
+                fn:function(){
+                    elem.important();
+                },
+                desc:"Make all the css properties in the element's style attribute use the !important statement."
+            },
+            {
+                text:'elem.important(false);',
+                fn:function(){
+                    elem.important(false);
+                },
+                desc:"Make all the css properties in the element's style attribute not use the !important statement."
+            },
+            {
+                text:"elem.important('background-color');",
+                fn:function(){
+                    elem.important('background-color');
+                },
+                desc:"Make the background-color property in the element's style attribute use the !important statement."
+            },
+            {
+                text:"elem.important('background-color', false);",
+                fn:function(){
+                    elem.important('background-color', false);
+                },
+                desc:"Make the background-color property in the element's style attribute not use the !important statement."
+            },
+            {
+                text:"$(elem).css({'background-color':'blue', color:'yellow'}, true);",
+                fn:function(){
+                    $(elem).css({'background-color':'blue', color:'yellow'}, true);
+                },
+                desc:""
+            },
+            {
+                text:"$(elem).important({'background-color':'black', color:'green'});",
+                fn:function(){
+                    $(elem).important({'background-color':'black', color:'green'});
+                },
+                desc:""
+            },
+            {
+                text:'$(style).important();',
+                fn:function(){
+                    $(style).important();
+                },
+                desc:""
+            },
+            {
+                text:'$(style).important(false);',
+                fn:function(){
+                    $(style).important(false);
+                },
+                desc:""
+            },
+            {
+                text:'$.noConflict();',
+                fn:function(){
+                    $.noConflict();
+                },
+                desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
+            }
+        ];
     
-        <p>This is an element with id <code>elem</code>.</p>
-        <p>The containing document has an inline style element with id <code>style</code>.</p>
-        <p>
-            <pre><code>
+    $.each(tests, function(i, test){
+        $('<button>' + test.text + '</button>')
+            .attr('title', test.desc || '')
+            .click(function(){
+                test.fn();
+                update();
+            })
+            .appendTo('#controls > ul');
+    });
+    update();
+}());
+    </script>
+</body>
+
+   
+<!--
+    <strong>Style element:</strong> <code id=style-inner></code>
+    <br>
+    <strong>Current style:</strong> <code id=current-style></code>
+
+    <p>This is an element with id <code>elem</code>.</p>
+    <p>The containing document has an inline style element with id <code>style</code>.</p>
+    <p>
+        <pre><code>
 $('#elem').important(); // adds the !important statement to all of this element's inline styles
 
 $('#elem').important(false); // removes the !important statement from all of this element's inline styles
 
 $('#elem').important({padding:'1em'}) ===
-    $('#elem').css({padding:'1em'}); // add an inline style, using the !important statement. This will override any existing CSS properties of this type.
+$('#elem').css({padding:'1em'}); // add an inline style, using the !important statement. This will override any existing CSS properties of this type.
 
 // TO BE IMPLEMENTED
 $('#elem').important('width', '1.62em') ===
-    $('#elem').width('1.62em', true); // do $('#elem').width('1.62em') using the !important statement
+$('#elem').width('1.62em', true); // do $('#elem').width('1.62em') using the !important statement
 
 // and similar, for other native jQuery methods:
 $('#elem').important('height');
@@ -203,82 +268,7 @@ $('#elem').important('padding'); // make this one inline style property !importa
 $('#elem').important('padding', false); // make this one inline style property not !important
 
 //  !important === sudo
-            </code></pre>
-        </p>
-    -->
-    
-    <script>
-        // TESTS
-        var
-            elem = $('#elem'),
-            elemReport = $('#elem-attr'),
-            style = $('#style'),
-            styleReport = $('#style-csstext'),
-            update = (function(){
-                return function(){
-                    elemReport
-                        .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
-                    styleReport
-                        .text(style.html());
-                }
-            }());
-        
-        update();
-        
-        
-        $('#cmd-toImportant')
-            .click(function(){
-                elem.important();
-                update();
-            });
-        
-        $('#cmd-notImportant')
-            .click(function(){
-                elem.important(false);
-                update();
-            });
-        
-        $('#cmd-noConflict')
-            .click(function(){
-                $.noConflict();
-                update();
-            });
-        
-        $('#cmd-makeImportant')
-            .click(function(){
-                elem.important('background-color');
-                update();
-            });
-        
-        $('#cmd-makeNotImportant')
-            .click(function(){
-                elem.important('background-color', false);
-                update();
-            });
-        
-        $('#cmd-addStyle')
-            .click(function(){
-                $(elem).css({'background-color':'blue', color:'yellow'}, true);
-                update();
-            });
-        
-        $('#cmd-addStyle2')
-            .click(function(){
-                $(elem).important({'background-color':'black', color:'green'});
-                update();
-            });
-        
-        $('#cmd-styleToImportant')
-            .click(function(){
-                $(style).important();
-                update();
-            });
-        
-        $('#cmd-styleToNotImportant2')
-            .click(function(){
-                $(style).important(false);
-                update();
-            });
-    </script>
-</body>
+        </code></pre>
+    </p>
+-->
 </html>
