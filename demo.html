@@ -29,18 +29,32 @@
             font-size:1.62em;
             font-weight:bold;
             padding:0;
-            margin:0;
+            margin:0.38em 0 0;
             position:fixed;
             top:1.62%;
             left:1.38%;
             z-index:2;
-            font-family:courier, monospace;
+            font-family:monospace;
+        }
+        h1 span {
+            float:left;
+            position:relative;
         }
         h1 .important {
             color:#c33;
+            font-family:serif;
+        }
+        h1 .dot {
+            color:white;
+            font-family:sans;
+            font-size:0.62em;
+            margin-top:1em;
         }
         h1 .js {
             color:#777;
+            font-family:sans;
+            font-size:0.62em;
+            margin-top:1em;
         }
         
         #contents {
@@ -88,7 +102,11 @@
 </head>
 
 <body>
-    <h1><span class=important>!important</span><span class=js>js</span></h1>
+    <h1>
+        <span class=important>!important</span>
+        <span class=dot>.</span>
+        <span class=js>js</span>
+        </h1>
 
     <!-- #contents -->
     <div id=contents>
