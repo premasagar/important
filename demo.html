@@ -10,8 +10,8 @@
 <!-- document-level !important rules for #elem -->
 <style id=style>
 #elem {
-    background-color:midnightblue !important;
-    color:white !important;
+    background-color: darkgreen !important;
+    color: yellow !important;
 }
 </style>
 <!-- end document-level !important rules for #elem -->
@@ -26,10 +26,10 @@
         }
         
         h1 {
-            font-size:1.62em;
+            font-size:1.38em;
             font-weight:bold;
             padding:0;
-            margin:0.38em 0 0;
+            margin:0;
             position:fixed;
             top:1.62%;
             left:1.38%;
@@ -41,7 +41,7 @@
             position:relative;
         }
         h1 .important {
-            color:#c33;
+            color:#900;
             font-family:serif;
         }
         h1 .dot {
@@ -51,7 +51,7 @@
             margin-top:1em;
         }
         h1 .js {
-            color:#777;
+            color:gray;
             font-family:sans;
             font-size:0.62em;
             margin-top:1em;
@@ -85,20 +85,36 @@
         }
     
         #elem {            
-            border:0.62em solid #ccc;
+            border:1px solid #888;
             overflow:auto;
-            width:34.2%;
+            width:38.2%;
             padding:1.62% 1.62% 0.62%;
             position:fixed;
             top:0;
             left:0;
+            font-size:0.9em;
         }
         
-        #elem code.colours {
-            /*
-            background-color:#c33;
-            color:#ffc;
-            */
+        #elem pre {
+            border-bottom-width:1px;
+            border-bottom-style:solid;
+            padding-bottom:1.62em;
+        }
+        #elem pre:last-child {
+            border-bottom-style:none;
+            padding-bottom:0;
+        }
+        
+        #elem code.background-color {
+            color:black;
+            border-width:1px;
+            border-style:solid;
+        }
+        
+        #elem code.color {
+            background-color:black;
+            border-width:1px;
+            border-style:solid;
         }
     </style>
 </head>
@@ -117,8 +133,8 @@
 
 <!-- #elem -->
 <div id=elem style="
-    background-color:orange;
-    color:seagreen;
+    background-color:darkred;
+    color:lightpink;
 ">
 
 <pre><code id=style-outer>
@@ -133,11 +149,21 @@
 
 <pre><code id=var-elem>
 &lt;script&gt;
-    elem.style.backgroundColor = <code id=var-background-color class=colours></code>;
-    elem.style.color = <code id=var-color class=colours></code>;
-    elem[0].style.backgroundColor = <code id=var-style-background-color class=colours></code>; 
-    elem[0].style.color = <code id=var-style-color class=colours></code>;   
-    elem[0].cssText = <code id=var-cssText class=colours></code>;
+    var elem = document.getElementById('elem');
+
+    jQuery(elem).css('background-color') = <code id=var-background-color class=background-color></code>;
+    jQuery(elem).css('color') = <code id=var-color></code>;
+
+    elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
+    elem.style.color = <code id=var-style-color class=color></code>;
+
+    elem.cssText = <code id=var-cssText></code>;
+
+    window.getComputedStyle(elem, null).backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
+    window.getComputedStyle(elem, null).color = <code id=var-computedStyle-color class=color></code>;
+
+    elem.currentStyle.backgroundColor = <code id=var-currentStyle-background-color class=background-color></code>;
+    elem.currentStyle.color = <code id=var-currentStyle-color class=color></code>;
 &lt;/script&gt;
 </code></pre>
 
@@ -159,43 +185,76 @@
 (function(){
     // TESTS
     var
+        // target elements
         elem = $('#elem'),
         style = $('#style'),
         
-        elemCssBg = elem.css('background-color') || '',
-        elemCssColor = elem.css('color') || '',
+        // read css properties
+        elemjQueryCssBg = elem.css('background-color') || '',
+        elemjQueryCssColor = elem.css('color') || '',
         
-        elemStyleBg = elem[0].style.backgroundColor || '',
-        elemStyleColor = elem[0].style.color || '',
+        elemStyle = elem[0].style,
+        elemStyleBg = elemStyle.backgroundColor || '',
+        elemStyleColor = elemStyle.color || '',
         
-        update = (function(){
-            return function(){
-                $('#elem-attr')
-                    .text('    ' + elem.attr('style').replace(/;\s*/, ';\n    '));
-                    
-                $('#style-csstext')
-                    .text(style.html());
-                    
-                $('#var-background-color')
-                    .text(elemCssBg)
-                    .css('background-color', elemCssBg);
-                    
-                $('#var-color')
-                    .text(elemCssColor)
-                    .css('color', elemCssColor);
-                    
-                $('#var-style-background-color')
-                    .text(elemStyleBg)
-                    .css('background-color', elemStyleBg);
-                    
-                $('#var-style-color')
-                    .text(elemStyleColor)
-                    .css('color', elemStyleColor);
-                    
-                $('#var-cssText')
-                    .text(elem[0].cssText);
-            }
-        }()),
+        computedStyle = window.getComputedStyle,
+        elemComputedStyleBg = computedStyle ? computedStyle(elem[0], null).backgroundColor : '',
+        elemComputedStyleColor = computedStyle ? computedStyle(elem[0], null).color : '',
+        
+        currentStyle = elem[0].currentStyle,
+        elemCurrentStyleBg = currentStyle ? currentStyle.backgroundColor : '',
+        elemCurrentStyleColor = currentStyle ? currentStyle.color : '',
+        
+        
+        // colour it like it says
+        colorMe = function(cssText){
+            return cssText.replace(/((background-)?color\s*:\s*)([\w#]+)(\s*)(! ?important)?(\s*[;$])/g, '$1<code style="$2color:$3;" class="$2color">$3</code>$4$5$6')
+        },
+        
+        // write out report
+        report = function(){
+            $('#elem-attr')
+                .html(colorMe('    ' + elem.attr('style').replace(/;\s*/, ';\n    ')));
+                
+            $('#style-csstext')
+                .html(colorMe(style.html()));
+                
+            $('#var-background-color')
+                .text(elemjQueryCssBg)
+                .css('background-color', elemjQueryCssBg);
+                
+            $('#var-color')
+                .text(elemjQueryCssColor)
+                .css('color', elemjQueryCssColor);
+                
+            $('#var-style-background-color')
+                .text(elemStyleBg)
+                .css('background-color', elemStyleBg);
+                
+            $('#var-style-color')
+                .text(elemStyleColor)
+                .css('color', elemStyleColor);
+                
+            $('#var-cssText')
+                .text(elem[0].cssText);
+                
+            $('#var-computedStyle-background-color')
+                .text(elemComputedStyleBg)
+                .css('background-color', elemStyleBg);
+                
+            $('#var-computedStyle-color')
+                .text(elemComputedStyleColor)
+                .css('color', elemStyleColor);
+                
+            $('#var-currentStyle-background-color')
+                .text(elemCurrentStyleBg)
+                .css('background-color', elemCurrentStyleBg);
+                
+            $('#var-currentStyle-color')
+                .text(elemCurrentStyleColor)
+                .css('color', elemCurrentStyleColor);
+                
+        },
         tests = [
             {
                 text:'elem.important();',
@@ -226,16 +285,16 @@
                 desc:"Make the color property in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.css({'background-color':'blue', color:'black'}, true);",
+                text:"elem.css({'background-color':'darkorange', color:'peachpuff'}, true);",
                 fn:function(){
-                    elem.css({'background-color':'blue', color:'black'}, true);
+                    elem.css({'background-color':'darkorange', color:'peachpuff'}, true);
                 },
                 desc:""
             },
             {
-                text:"elem.important({'background-color':'black', color:'green'});",
+                text:"elem.important({'background-color':'darkblue', color:'lightblue'});",
                 fn:function(){
-                    elem.important({'background-color':'black', color:'green'});
+                    elem.important({'background-color':'darkblue', color:'lightblue'});
                 },
                 desc:""
             },
@@ -267,11 +326,12 @@
             .attr('title', test.desc || '')
             .click(function(){
                 test.fn();
-                update();
+                report();
             })
             .appendTo('#controls > ul');
     });
-    update();
+    
+    report();
 }());
     </script>
 </body>
