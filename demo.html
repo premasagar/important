@@ -3,14 +3,15 @@
 <head>
     <meta charset=utf-8 />
     <title>!importantjs</title>
+    <script src=../console/console.js></script>
     <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
     <script src=important.js></script>
     
 
 <!-- document-level !important rules for #elem -->
-<style id=style>
+<style id=style-elem>
 #elem {
-    background-color: darkgreen !important;
+    background-color: darkblue !important;
     color: yellow !important;
 }
 </style>
@@ -30,7 +31,7 @@
             font-weight:bold;
             padding:0;
             margin:0;
-            position:fixed;
+            position:absolute;
             top:1.62%;
             left:1.38%;
             z-index:2;
@@ -89,7 +90,7 @@
             overflow:auto;
             width:38.2%;
             padding:1.62% 1.62% 0.62%;
-            position:fixed;
+            float:left;
             top:0;
             left:0;
             font-size:0.9em;
@@ -138,7 +139,7 @@
 ">
 
 <pre><code id=style-outer>
-&lt;style id=style&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
+&lt;style id=style-elem&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
 </code></pre>
 
 <pre><code id=elem-outer>
@@ -159,8 +160,9 @@
 
     elem.cssText = <code id=var-cssText></code>;
 
-    window.getComputedStyle(elem, null).backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
-    window.getComputedStyle(elem, null).color = <code id=var-computedStyle-color class=color></code>;
+    var computed = window.getComputedStyle(elem, null);
+    computed.backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
+    computed.color = <code id=var-computedStyle-color class=color></code>;
 
     elem.currentStyle.backgroundColor = <code id=var-currentStyle-background-color class=background-color></code>;
     elem.currentStyle.color = <code id=var-currentStyle-color class=color></code>;
@@ -187,7 +189,7 @@
     var
         // target elements
         elem = $('#elem'),
-        style = $('#style'),
+        style = $('#style-elem'),
         
         // read css properties
         elemjQueryCssBg = elem.css('background-color') || '',
@@ -253,7 +255,6 @@
             $('#var-currentStyle-color')
                 .text(elemCurrentStyleColor)
                 .css('color', elemCurrentStyleColor);
-                
         },
         tests = [
             {
@@ -271,30 +272,30 @@
                 desc:"Make all the css properties in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.important('color');",
+                text:"elem.important('background-color');",
                 fn:function(){
-                    elem.important('color');
+                    elem.important('background-color');
                 },
-                desc:"Make the color property in the element's style attribute use the !important statement."
+                desc:"Make the background-color property in the element's style attribute use the !important statement."
             },
             {
-                text:"elem.important('color', false);",
+                text:"elem.important('background-color', false);",
                 fn:function(){
-                    elem.important('color', false);
+                    elem.important('background-color', false);
                 },
-                desc:"Make the color property in the element's style attribute not use the !important statement."
+                desc:"Make the background-color property in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.css({'background-color':'darkorange', color:'peachpuff'}, true);",
+                text:"elem.css({'background-color':'darkorange', color:'green'}, true);",
                 fn:function(){
-                    elem.css({'background-color':'darkorange', color:'peachpuff'}, true);
+                    elem.css({'background-color':'darkorange', color:'green'}, true);
                 },
                 desc:""
             },
             {
-                text:"elem.important({'background-color':'darkblue', color:'lightblue'});",
+                text:"elem.important({'background-color':'darkgreen', color:'lightblue'});",
                 fn:function(){
-                    elem.important({'background-color':'darkblue', color:'lightblue'});
+                    elem.important({'background-color':'darkgreen', color:'lightblue'});
                 },
                 desc:""
             },
