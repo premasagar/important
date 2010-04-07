@@ -22,14 +22,14 @@
     <!-- general styling for demo -->
     <style>
         body {
-            padding:0;
+            padding:0.62em;
             margin:0;
         }
         
         h1 {
             font-size:1.38em;
             font-weight:bold;
-            padding:0;
+            padding:0.62em;
             margin:0;
             position:absolute;
             top:1.62%;
@@ -40,6 +40,11 @@
         h1 span {
             float:left;
             position:relative;
+        }
+        h1 .slashslash {
+            color:#555;
+            margin:0.34em 0.34em 0 0;
+            font-family:monospace;
         }
         h1 .important {
             color:#900;
@@ -57,6 +62,20 @@
             font-size:0.62em;
             margin-top:1em;
         }
+        h1 .sep {
+            color:#555;
+            margin:0.34em 0.34em 0 0.62em;
+            font-family:monospace;
+        }
+        h1 .console {
+            color:#555;
+            margin:0.34em 0.34em 0 0;
+            font-family:monospace;
+        }
+        .code {
+            color:#ccc;
+            font-family:monospace;
+        }
         
         #contents {
             position:relative;
@@ -66,6 +85,16 @@
             width:56.8%;
             padding:0 0 0.62%;
             float:right;
+        }
+        #controls h2 {
+            font-family: monospace;
+            color:#aaa;
+            font-size:1.62em;
+        }
+        #controls .code {
+            font-family: monospace;
+            color:#aaa;
+            font-size:1.62em;
         }
         #controls button {
             font-size:1em;
@@ -88,22 +117,17 @@
         #elem {            
             border:1px solid #888;
             overflow:auto;
-            width:38.2%;
-            padding:1.62% 1.62% 0.62%;
+            max-width:38.2%;
+            min-width:16em;
+            padding:2.62% 1.62% 0.62%;
             float:left;
             top:0;
             left:0;
-            font-size:0.9em;
         }
         
         #elem pre {
-            border-bottom-width:1px;
-            border-bottom-style:solid;
-            padding-bottom:1.62em;
-        }
-        #elem pre:last-child {
-            border-bottom-style:none;
-            padding-bottom:0;
+            border-top-width:1px;
+            border-top-style:solid;
         }
         
         #elem code.background-color {
@@ -122,10 +146,13 @@
 
 <body>
     <h1>
+        <span class=slashslash>//</span>
         <span class=important>!important</span>
         <span class=dot>.</span>
         <span class=js>js</span>
-        </h1>
+        <span class=sep>:</span>
+        <span class=console>console</span>
+    </h1>
 
     <!-- #contents -->
     <div id=contents>
@@ -176,7 +203,9 @@
     
         <div id=controls>
             <h2>Controls</h2>
+            <span class=code>:[</span>
             <ul></ul>
+            <span class=code>];</span>
         </div>
     </div>
     <!-- end #contents -->
