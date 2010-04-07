@@ -267,7 +267,6 @@
                 property = method;
                 makeImportant = (args[1] !== false);
                 
-                _([property, makeImportant, cssDeclaration(property, makeImportant, elem.attr('style'))]);
                 elem.attr('style', cssDeclaration(property, makeImportant, elem.attr('style')));
             }
         }
