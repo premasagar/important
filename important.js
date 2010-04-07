@@ -36,7 +36,7 @@
     
         // return a regular expression of a declaration, with the backreferences as the CSS property and the value
         function regexDeclaration(property){
-            return new RegExp('[\\^\\s;](' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
+            return new RegExp('(?:^|\\s|;)(' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
         }
         function find(property, rules){
             return rules.match(regexDeclaration(property));
@@ -267,6 +267,7 @@
                 property = method;
                 makeImportant = (args[1] !== false);
                 
+                _([property, makeImportant, cssDeclaration(property, makeImportant, elem.attr('style'))]);
                 elem.attr('style', cssDeclaration(property, makeImportant, elem.attr('style')));
             }
         }
