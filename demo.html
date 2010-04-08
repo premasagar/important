@@ -3,9 +3,10 @@
 <head>
     <meta charset=utf-8 />
     <title>!importantjs</title>
-    <!-- <script src=../console/console.js></script> -->
-    <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script>
-    <script src=important.js></script>
+    <!-- <script src="../console/console.js"></script> -->
+    <!-- <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script> -->
+    <script src="../jquery.js"</script>
+    <script src="important.js"></script>
     
 
 <!-- document-level !important rules for #elem -->
@@ -131,7 +132,7 @@
         }
         
         #elem code.background-color {
-            color:black;
+            color:white;
             border-width:1px;
             border-style:solid;
         }
@@ -177,10 +178,12 @@
 
 <pre><code id=var-elem>
 &lt;script&gt;
-    var elem = document.getElementById('elem');
+    var
+        elem = document.getElementById('elem'),
+        styleElem = document.getElementById('style-elem');
 
     jQuery(elem).css('background-color') = <code id=var-background-color class=background-color></code>;
-    jQuery(elem).css('color') = <code id=var-color></code>;
+    jQuery(elem).css('color') = <code id=var-color class=color></code>;
 
     elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
     elem.style.color = <code id=var-style-color class=color></code>;
@@ -191,8 +194,12 @@
     computed.backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
     computed.color = <code id=var-computedStyle-color class=color></code>;
 
+    // IE proprietary
     elem.currentStyle.backgroundColor = <code id=var-currentStyle-background-color class=background-color></code>;
     elem.currentStyle.color = <code id=var-currentStyle-color class=color></code>;
+
+    // !important flag
+    jQuery.important = <code id=var-important-flag></code>;
 &lt;/script&gt;
 </code></pre>
 
@@ -252,91 +259,102 @@
                 
             $('#var-background-color')
                 .text(elemjQueryCssBg)
-                .css('background-color', elemjQueryCssBg);
+                .important({'background-color': elemjQueryCssBg});
                 
             $('#var-color')
                 .text(elemjQueryCssColor)
-                .css('color', elemjQueryCssColor);
+                .important({'color': elemjQueryCssColor});
                 
             $('#var-style-background-color')
                 .text(elemStyleBg)
-                .css('background-color', elemStyleBg);
+                .important({'background-color': elemStyleBg});
                 
             $('#var-style-color')
                 .text(elemStyleColor)
-                .css('color', elemStyleColor);
+                .important({'color': elemStyleColor});
                 
             $('#var-cssText')
                 .text(elem[0].cssText);
                 
             $('#var-computedStyle-background-color')
                 .text(elemComputedStyleBg)
-                .css('background-color', elemStyleBg);
+                .important({'background-color': elemStyleBg});
                 
             $('#var-computedStyle-color')
                 .text(elemComputedStyleColor)
-                .css('color', elemStyleColor);
+                .important({'color': elemStyleColor});
                 
             $('#var-currentStyle-background-color')
                 .text(elemCurrentStyleBg)
-                .css('background-color', elemCurrentStyleBg);
+                .important({'background-color': elemCurrentStyleBg});
                 
             $('#var-currentStyle-color')
                 .text(elemCurrentStyleColor)
-                .css('color', elemCurrentStyleColor);
+                .important({'color': elemCurrentStyleColor});
+
+            $('#var-important-flag')
+                .text($.important())
+                .important({'background-color': $.important() ? 'darkgreen' : 'darkred'});
         },
         tests = [
             {
-                text:'elem.important();',
+                text:'$(elem).important();',
                 fn:function(){
-                    elem.important();
+                    $(elem).important();
                 },
                 desc:"Make all the css properties in the element's style attribute use the !important statement."
             },
             {
-                text:'elem.important(false);',
+                text:'$(elem).important(false);',
                 fn:function(){
-                    elem.important(false);
+                    $(elem).important(false);
                 },
                 desc:"Make all the css properties in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.important('background-color');",
+                text:"$(elem).important('background-color');",
                 fn:function(){
-                    elem.important('background-color');
+                    $(elem).important('background-color');
                 },
                 desc:"Make the background-color property in the element's style attribute use the !important statement."
             },
             {
-                text:"elem.important('background-color', false);",
+                text:"$(elem).important('background-color', false);",
                 fn:function(){
-                    elem.important('background-color', false);
+                    $(elem).important('background-color', false);
                 },
                 desc:"Make the background-color property in the element's style attribute not use the !important statement."
             },
             {
-                text:"elem.css({'background-color':'darkorange', color:'green'}, true);",
+                text:"$(elem).css({'background-color':'darkorange', color:'green'}, true);",
                 fn:function(){
-                    elem.css({'background-color':'darkorange', color:'green'}, true);
+                    $(elem).css({'background-color':'darkorange', color:'green'}, true);
                 },
                 desc:""
             },
             {
-                text:"elem.important({'background-color':'darkgreen', color:'lightblue'});",
+                text:"$(elem).css('background-color', 'gray');",
                 fn:function(){
-                    elem.important({'background-color':'darkgreen', color:'lightblue'});
+                    $(elem).css('background-color', 'gray');
                 },
                 desc:""
             },
             {
-                text:'style.important();',
+                text:"$(elem).important({'background-color':'darkgreen', color:'lightblue'});",
+                fn:function(){
+                    $(elem).important({'background-color':'darkgreen', color:'lightblue'});
+                },
+                desc:""
+            },
+            {
+                text:'$(styleElem).important();',
                 fn:function(){
                     style.important();
                 },
                 desc:""
             },
             {
-                text:'style.important(false);',
+                text:'$(styleElem).important(false);',
                 fn:function(){
                     style.important(false);
                 },
@@ -362,6 +380,13 @@
                     $.important(false);
                 },
                 desc:"Switch off !important flag."
+            },
+            {
+                text:'$.important(function(){$(elem).css("color", "red");});',
+                fn:function(){
+                    $.important(function(){$(elem).css("color", "red");});
+                },
+                desc:"Pass a function to be executed in the presence of the !important flag."
             }
         ];
     
