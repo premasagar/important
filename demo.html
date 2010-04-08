@@ -343,11 +343,25 @@
                 desc:""
             },
             {
-                text:'$.important.noConflict();',
+                text:'$.noConflict();',
                 fn:function(){
                     $.important.noConflict();
                 },
                 desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
+            },
+            {
+                text:'$.important(true);',
+                fn:function(){
+                    $.important(true);
+                },
+                desc:"Switch on !important flag."
+            },
+            {
+                text:'$.important(false);',
+                fn:function(){
+                    $.important(false);
+                },
+                desc:"Switch off !important flag."
             }
         ];
     
