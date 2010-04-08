@@ -119,15 +119,15 @@
 	                    var
 	                        rulesHash = {},
 	                        elem = $(this),
-	                        rules = elem.attr('style');
-
-	                    // CSS lookup
-	                    if (typeof value === 'undefined'){
-                            return original.css.apply(this, arguments);
-	                    }
+	                        rules = elem.attr('style');	                    
 	                    
 	                    // Create object, if arg is a string
 	                    if (typeof property === 'string'){
+                            // CSS lookup
+	                        if (typeof value === 'undefined'){
+                                return original.css.apply(this, arguments);
+	                        }
+	                    
 		                    rulesHash[property] = value;
 	                    }
 	                    else if (typeof property === 'object'){

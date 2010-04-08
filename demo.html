@@ -86,16 +86,26 @@
             width:56.8%;
             padding:0 0 0.62%;
             float:right;
+            position:relative;
         }
         #controls h2 {
             font-family: monospace;
-            color:#aaa;
-            font-size:1.62em;
+            color:#555;
+            font-size:1em;
+            margin:0;
+            padding:0;
+            float:left;
+            text-transform:lowercase;
         }
         #controls .code {
             font-family: monospace;
-            color:#aaa;
-            font-size:1.62em;
+            color:#999;
+            font-size:1em;
+            float:left;
+        }
+        #controls ul {
+            margin:0;
+            padding:0;
         }
         #controls button {
             font-size:1em;
@@ -220,26 +230,30 @@
  
     
     <script>
+// Set up the demo
 (function($){
-    // TESTS
+
     var
         // target elements
-        elem = $('#elem'),
-        style = $('#style-elem'),
+        $elem = $('#elem'),
+        $style = $('#style-elem'),
+        
+        elem = $elem[0],
+        styleElem = $style[0],
         
         // read css properties
-        elemjQueryCssBg = elem.css('background-color') || '',
-        elemjQueryCssColor = elem.css('color') || '',
+        elemjQueryCssBg = $elem.css('background-color') || '',
+        elemjQueryCssColor = $elem.css('color') || '',
         
-        elemStyle = elem[0].style,
+        elemStyle = elem.style,
         elemStyleBg = elemStyle.backgroundColor || '',
         elemStyleColor = elemStyle.color || '',
         
         computedStyle = window.getComputedStyle,
-        elemComputedStyleBg = computedStyle ? computedStyle(elem[0], null).backgroundColor : '',
-        elemComputedStyleColor = computedStyle ? computedStyle(elem[0], null).color : '',
+        elemComputedStyleBg = computedStyle ? computedStyle(elem, null).backgroundColor : '',
+        elemComputedStyleColor = computedStyle ? computedStyle(elem, null).color : '',
         
-        currentStyle = elem[0].currentStyle,
+        currentStyle = elem.currentStyle,
         elemCurrentStyleBg = currentStyle ? currentStyle.backgroundColor : '',
         elemCurrentStyleColor = currentStyle ? currentStyle.color : '',
         
@@ -252,10 +266,10 @@
         // write out report
         report = function(){
             $('#elem-attr')
-                .html(colorMe('    ' + elem.attr('style').replace(/;\s*/, ';\n    ')));
+                .html(colorMe('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ')));
                 
             $('#style-csstext')
-                .html(colorMe(style.html()));
+                .html(colorMe($style.html()));
                 
             $('#var-background-color')
                 .text(elemjQueryCssBg)
@@ -274,7 +288,7 @@
                 .important({'color': elemStyleColor});
                 
             $('#var-cssText')
-                .text(elem[0].cssText);
+                .text(elem.cssText);
                 
             $('#var-computedStyle-background-color')
                 .text(elemComputedStyleBg)
@@ -349,23 +363,23 @@
             {
                 text:'$(styleElem).important();',
                 fn:function(){
-                    style.important();
+                    $(styleElem).important();
                 },
                 desc:""
             },
             {
                 text:'$(styleElem).important(false);',
                 fn:function(){
-                    style.important(false);
+                    $(styleElem).important(false);
                 },
                 desc:""
             },
             {
-                text:'$.important.noConflict();',
+                text:'$.important(function(){$(elem).css("color", "red");});',
                 fn:function(){
-                    $.important.noConflict();
+                    $.important(function(){$(elem).css("color", "red");});
                 },
-                desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
+                desc:"Pass a function to be executed in the presence of the !important flag."
             },
             {
                 text:'$.important(true);',
@@ -382,11 +396,11 @@
                 desc:"Switch off !important flag."
             },
             {
-                text:'$.important(function(){$(elem).css("color", "red");});',
+                text:'$.important.noConflict();',
                 fn:function(){
-                    $.important(function(){$(elem).css("color", "red");});
+                    $.important.noConflict();
                 },
-                desc:"Pass a function to be executed in the presence of the !important flag."
+                desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
             }
         ];
     
@@ -399,8 +413,20 @@
             })
             .appendTo('#controls > ul');
     });
-    
+
+    // Initial report
     report();
+
+    // Global vars, for console debugging
+    $.extend(
+        window,
+        {
+            elem: elem,
+            styleElem: styleElem,
+            computed: window.getComputedStyle(elem, null),
+            report: report
+        }
+    );
 }(jQuery));
     </script>
 </body>
