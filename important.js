@@ -77,15 +77,6 @@
     }
     
     
-    // Native JS function for inserting !important rules into an element
-    // Not required when jQuery(elem).important is available
-    /*
-    function insertDeclaration(elem, property, value){
-        return elem.setAttribute('style', cssDeclaration(property, value, elem.getAttribute('style')));
-    }
-    */
-    
-    
     // Add !important to the end of CSS rules, except to those that already have it
     function toImportant(rulesets, makeImportant){
         // Cache regular expression
@@ -191,12 +182,6 @@
     
     
     // jQuery.important
-    
-    // TODO:
-    /*
-    $.important('margin:0', 'padding:0; margin:auto;');
-    
-    */
     $.important = $.extend(
         function(){
             var
@@ -250,7 +235,6 @@
             property, makeImportant, fn;
                 
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
-        // TODO: Check for elem.attr('nodeName') === 'style' and make innerHTML CSS go !important
         if (typeof method === 'undefined' || typeof method === 'boolean'){
             // special behaviour for specific elements
             if (!nodeName){
