@@ -241,15 +241,31 @@
         var
             elem = $(this),
             args = $.makeArray(arguments).concat(true),
+            nodeName = elem.data('nodeName'),
             property, makeImportant, fn;
-        
+                
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
         // TODO: Check for elem.attr('nodeName') === 'style' and make innerHTML CSS go !important
         if (typeof method === 'undefined' || typeof method === 'boolean'){
-            return elem.attr(
-                'style',
-                $.important(elem.attr('style'), method)
-            );
+            // special behaviour for specific elements
+            if (!nodeName){
+                nodeName = elem.attr('nodeName').toLowerCase();
+                elem.data('nodeName', nodeName);
+            }
+            // style elements
+            if (nodeName === 'style'){
+                makeImportant = (method !== false);
+                elem.html(
+                    toImportant(elem.html(), makeImportant)
+                );
+            }
+            else {
+                elem.attr(
+                    'style',
+                    $.important(elem.attr('style'), method)
+                );
+            }
+            return elem;
         }
         else if (typeof method === 'object'){
             args.unshift('css');
@@ -266,8 +282,11 @@
             else if (typeof args[1] === 'undefined' || typeof args[1] === 'boolean'){
                 property = method;
                 makeImportant = (args[1] !== false);
-                
-                elem.attr('style', cssDeclaration(property, makeImportant, elem.attr('style')));
+
+                elem.attr(
+                    'style',
+                    cssDeclaration(property, makeImportant, elem.attr('style'))
+                );
             }
         }
         // pass a function, which will be executed while the !important flag is set to true

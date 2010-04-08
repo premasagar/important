@@ -47,7 +47,7 @@
             font-family:monospace;
         }
         h1 .important {
-            color:#900;
+            color:red;
             font-family:serif;
         }
         h1 .dot {
@@ -213,7 +213,7 @@
  
     
     <script>
-(function(){
+(function($){
     // TESTS
     var
         // target elements
@@ -343,9 +343,9 @@
                 desc:""
             },
             {
-                text:'$.noConflict();',
+                text:'$.important.noConflict();',
                 fn:function(){
-                    $.noConflict();
+                    $.important.noConflict();
                 },
                 desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
             }
@@ -362,7 +362,7 @@
     });
     
     report();
-}());
+}(jQuery));
     </script>
 </body>
 
