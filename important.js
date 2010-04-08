@@ -129,6 +129,11 @@
 	                        rulesHash = {},
 	                        elem = $(this),
 	                        rules = elem.attr('style');
+
+	                    // CSS lookup
+	                    if (typeof value === 'undefined'){
+                            return original.css.apply(this, arguments);
+	                    }
 	                    
 	                    // Create object, if arg is a string
 	                    if (typeof property === 'string'){
@@ -176,7 +181,7 @@
 	                    return fn.apply(elem, args);
 	                }
 	                // apply original, native jQuery method
-	                original[method].apply(elem, args);
+	                return original[method].apply(elem, args);
 	            };
 	        }
 	    );
