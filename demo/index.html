@@ -26,7 +26,9 @@
             padding:0.62em;
             margin:0;
         }
-        
+        h1[title], p[title], span[title] {
+            cursor:help;
+        }
         h1 {
             font-size:1.38em;
             font-weight:bold;
@@ -82,11 +84,53 @@
             position:relative;
         }
     
+        #elem {            
+            border:1px solid #888;
+            overflow:auto;
+            width:27.6em;
+            /*
+            max-width:38.2%;
+            min-width:16em;
+            */
+            padding:2.62% 1.62% 0.62%;
+            float:left;
+            top:0;
+            left:0;
+            margin:0 0.62em 0.62em 0;
+        }
+        #elem pre {
+            border-top-width:1px;
+            border-top-style:solid;
+            line-height:1.38em;
+        }
+        #elem code.background-color {
+            color:#ccc;
+            border-width:1px;
+            border-style:solid;
+            font-weight:bold;
+        }
+        #elem code.color {
+            background-color:black;
+            border-width:1px;
+            border-style:solid;
+            font-weight:bold;
+        }
+        #elem code.comment {
+            color:#777;
+        }
+        #elem #var-important-flag {
+            border-width:1px;
+            border-style:solid;
+        }
+    
         #controls {
-            width:56.8%;
-            padding:0 0 0.62%;
-            float:right;
+            float:left;
             position:relative;
+            max-width:38.2%;
+            /*
+            width:56.8%;
+            */
+            margin:0 0.62em 0.62em 1.62em;
         }
         #controls h2 {
             font-family: monospace;
@@ -103,16 +147,16 @@
             font-size:1em;
             float:left;
         }
-        #controls ul {
+        #controls ol {
             margin:0;
             padding:0;
+            font-family:monospace;
         }
         #controls button {
-            font-size:1em;
+            font-size:1.38em;
             width:100%;
             text-align:left;
-            font-family:courier, monospace;
-            font-weight:bold;
+            font-family:monospace;
             color:white;
             background-color:black;
             border:1px solid white;
@@ -124,44 +168,13 @@
             color:#ffc;
             background-color:#c33;
         }
-    
-        #elem {            
-            border:1px solid #888;
-            overflow:auto;
-            max-width:38.2%;
-            min-width:16em;
-            padding:2.62% 1.62% 0.62%;
-            float:left;
-            top:0;
-            left:0;
-        }
-        
-        #elem pre {
-            border-top-width:1px;
-            border-top-style:solid;
-            line-height:1.38em;
-        }
-        
-        #elem code.background-color {
-            color:#ccc;
-            border-width:1px;
-            border-style:solid;
-            font-weight:bold;
-        }
-        
-        #elem code.color {
-            background-color:black;
-            border-width:1px;
-            border-style:solid;
-            font-weight:bold;
-        }
     </style>
 </head>
 
 <body>
     <h1>
         <span class=slashslash>//</span>
-        <span class=important>!important</span>
+        <span class=important title="...but not urgent">!important</span>
         <span class=dot>.</span>
         <span class=js>js</span>
         <span class=sep>:</span>
@@ -179,45 +192,55 @@
     color:lightpink;
 ">
 
+<!-- console -->
 <pre><code id=style-outer>
+<code class=comment>&lt;!-- a style element in the &lt;head&gt; of this document --&gt;</code>
 &lt;style id=style-elem&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
 </code></pre>
 
 <pre><code id=elem-outer>
+<code class=comment>&lt;!-- elem: a div element in the &lt;body&gt; of this document --&gt;</code>
 &lt;div id=elem style=&quot;
 <code id=elem-attr class=colours></code>
 &quot;&gt;&lt;/div&gt;
 </code></pre>
 
 <pre><code id=var-elem>
+<code class=comment>&lt;!-- CSS style properties of the element,
+    using JavaScript DOM API & jQuery methods --&gt;</code>
 &lt;script&gt;
+    <code class=comment>// Global variables (you can access these via
+        your browser console, e.g. Firebug)</code>
     var
         elem = document.getElementById('elem'),
         styleElem = document.getElementById('style-elem');
 
+    <code class=comment>// DOM API</code>
+    elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
+    elem.style.color = <code id=var-style-color class=color></code>;
+
+    var computed = window.getComputedStyle(elem, null);
+    computed.backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
+    computed.color = <code id=var-computedStyle-color class=color></code>;
+
+    elem.cssText = <code id=var-cssText></code>;
+
+    <code class=comment>// jQuery methods</code>
     $(elem).css('background-color') = <code id=var-background-color class=background-color></code>;
     $(elem).css('color') = <code id=var-color class=color></code>;
 
     $.curCSS(elem, 'background-color', true) = <code id=var-curcss-background-color class=background-color></code>;
     $.curCSS(elem, 'color', true) = <code id=var-curcss-color class=color></code>;
 
-    elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
-    elem.style.color = <code id=var-style-color class=color></code>;
-
-    elem.cssText = <code id=var-cssText></code>;
-
-    var computed = window.getComputedStyle(elem, null);
-    computed.backgroundColor = <code id=var-computedStyle-background-color class=background-color></code>;
-    computed.color = <code id=var-computedStyle-color class=color></code>;
-
-    // IE proprietary
+    <code class=comment>// IE proprietary</code>
     elem.currentStyle.backgroundColor = <code id=var-currentStyle-background-color class=background-color></code>;
     elem.currentStyle.color = <code id=var-currentStyle-color class=color></code>;
 
-    // !important flag
+    <code class=comment>// !important flag, set by the plugin</code>
     jQuery.important = <code id=var-important-flag></code>;
 &lt;/script&gt;
 </code></pre>
+<!-- end console -->
 
 </div>
 <!-- end #elem -->    
@@ -227,7 +250,7 @@
         <div id=controls>
             <h2>Controls</h2>
             <span class=code>:[</span>
-            <ul></ul>
+            <ol></ol>
             <span class=code>];</span>
         </div>
     </div>
@@ -324,8 +347,8 @@
                 .important({'color': elemCurrentStyleColor});
 
             $('#var-important-flag')
-                .text($.important())
-                .important({'background-color': $.important() ? 'darkgreen' : 'darkred'});
+                .text($.important.status)
+                .important({'background-color': $.important.status ? 'darkgreen' : 'darkred'});
         },
         tests = [
             {
@@ -343,18 +366,18 @@
                 desc:"Make all the css properties in the element's style attribute not use the !important statement."
             },
             {
-                text:'$(styleElem).important();',
-                fn:function(){
-                    $(styleElem).important();
-                },
-                desc:""
-            },
-            {
                 text:'$(styleElem).important(false);',
                 fn:function(){
                     $(styleElem).important(false);
                 },
-                desc:""
+                desc:"Make all the css rules in the style element not use the !important statement."
+            },
+            {
+                text:'$(styleElem).important();',
+                fn:function(){
+                    $(styleElem).important();
+                },
+                desc:"Make all the css rules in the style element use the !important statement."
             },
             {
                 text:"$(elem).important('background-color');",
@@ -375,42 +398,49 @@
                 fn:function(){
                     $(elem).important({'background-color':'darkgreen', color:'lightblue'});
                 },
-                desc:""
+                desc:"Change the colours, using the .important() jQuery method."
             },
             {
                 text:"$(elem).css({'background-color':'darkorange', color:'green'}, true);",
                 fn:function(){
                     $(elem).css({'background-color':'darkorange', color:'green'}, true);
                 },
-                desc:""
+                desc:"Change the colours, by passing boolean true as the last argument to the overloaded .css() jQuery method."
             },
             {
                 text:"$(elem).css('background-color', 'gray');",
                 fn:function(){
                     $(elem).css('background-color', 'gray');
                 },
-                desc:""
+                desc:"Attempt to run a standard jQuery method - this doesn't normally work when !important rules are involved."
             },
             {
-                text:"$.important(function(){$(elem).css('color', 'red');});",
+                text:"$.important(); $(elem).css('background-color', 'gray'); $.important(false);",
                 fn:function(){
-                    $.important(function(){$(elem).css("color", "red");});
+                    $.important(function(){$(elem).css('background-color', 'gray');});
                 },
-                desc:"Pass a function to be executed in the presence of the !important flag."
+                desc:"Turn the !important flag on, then run a jQuery method, then turn the !important flag off again."
             },
             {
-                text:'$.important(true);',
+                text:"$.important(function(){$(elem).css('background-color', 'brown');});",
                 fn:function(){
-                    $.important(true);
+                    $.important(function(){$(elem).css('background-color', 'brown');});
                 },
-                desc:"Switch on !important flag."
+                desc:"Pass a function to be executed in the context of the !important flag."
+            },
+            {
+                text:'$.important();',
+                fn:function(){
+                    $.important();
+                },
+                desc:"Switch on the !important flag."
             },
             {
                 text:'$.important(false);',
                 fn:function(){
                     $.important(false);
                 },
-                desc:"Switch off !important flag."
+                desc:"Switch off the !important flag."
             },
             {
                 text:'$.important.noConflict();',
@@ -422,13 +452,13 @@
         ];
     
     $.each(tests, function(i, test){
-        $('<button>' + test.text + '</button>')
+        $('<li><button>' + test.text + '</button></li>')
             .attr('title', test.desc || '')
             .click(function(){
                 test.fn();
                 report();
             })
-            .appendTo('#controls > ul');
+            .appendTo('#controls > ol');
     });
 
     // Initial report
