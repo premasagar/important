@@ -215,7 +215,7 @@
         elem = document.getElementById('elem'),
         styleElem = document.getElementById('style-elem');
 
-    <code class=comment>// DOM API</code>
+    <code class=comment>// CSS DOM API</code>
     elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
     elem.style.color = <code id=var-style-color class=color></code>;
 
@@ -269,39 +269,56 @@
         
         elem = $elem[0],
         styleElem = $style[0],
-        
-        // read css properties
-        elemjQueryCssBg = $elem.css('background-color') || '',
-        elemjQueryCssColor = $elem.css('color') || '',
 
-        elemjQueryCurCssBg = $.curCSS(elem, 'background-color', true),
-        elemjQueryCurCssColor = $.curCSS(elem, 'color', true),
-        
         elemStyle = elem.style,
-        elemStyleBg = elemStyle.backgroundColor || '',
-        elemStyleColor = elemStyle.color || '',
-        
         computedStyle = window.getComputedStyle,
-        elemComputedStyleBg = computedStyle ? computedStyle(elem, null).backgroundColor : '',
-        elemComputedStyleColor = computedStyle ? computedStyle(elem, null).color : '',
-        
         currentStyle = elem.currentStyle,
-        elemCurrentStyleBg = currentStyle ? currentStyle.backgroundColor : '',
-        elemCurrentStyleColor = currentStyle ? currentStyle.color : '',
         
+        elemjQueryCssBg = '',
+        elemjQueryCssColor = '',
+        
+        elemjQueryCurCssBg = '',
+        elemjQueryCurCssColor = '',
+        
+        elemStyleBg = '',
+        elemStyleColor = '',
+        
+        elemComputedStyleBg = '',
+        elemComputedStyleColor = '',
+        
+        elemCurrentStyleBg = '',
+        elemCurrentStyleColor = '',s
         
         // colour it like it says
-        colorMe = function(cssText){
+        colorIt = function(cssText){
             return cssText.replace(/((background-)?color\s*:\s*)([\w#]+)(\s*)(! ?important)?(\s*[;$])/g, '$1<code style="$2color:$3;" class="$2color">$3</code>$4$5$6')
         },
         
         // write out report
         report = function(){
+            // Read JavaScript CSS DOM properties
+            elemjQueryCssBg = $elem.css('background-color');
+            elemjQueryCssColor = $elem.css('color');
+
+            elemjQueryCurCssBg = $.curCSS(elem, 'background-color', true);
+            elemjQueryCurCssColor = $.curCSS(elem, 'color', true);
+            
+            elemStyleBg = elemStyle.backgroundColor;
+            elemStyleColor = elemStyle.color;
+            
+            elemComputedStyleBg = computedStyle ? computedStyle(elem, null).backgroundColor : '';
+            elemComputedStyleColor = computedStyle ? computedStyle(elem, null).color : '';
+            
+            elemCurrentStyleBg = currentStyle ? currentStyle.backgroundColor : '';
+            elemCurrentStyleColor = currentStyle ? currentStyle.color : '';
+        
+
+            // Update console
             $('#elem-attr')
-                .html(colorMe('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ')));
+                .html(colorIt('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ')));
                 
             $('#style-csstext')
-                .html(colorMe($style.html()));
+                .html(colorIt($style.html()));
                 
             $('#var-background-color')
                 .text(elemjQueryCssBg)
@@ -394,11 +411,11 @@
                 desc:"Make the background-color property in the element's style attribute not use the !important statement."
             },
             {
-                text:"$(elem).important({'background-color':'darkgreen', color:'lightblue'});",
+                text:"$(elem).css('background-color', 'darkorange');",
                 fn:function(){
-                    $(elem).important({'background-color':'darkgreen', color:'lightblue'});
+                    $(elem).css('background-color', 'darkorange');
                 },
-                desc:"Change the colours, using the .important() jQuery method."
+                desc:"Attempt to run a standard jQuery method - this attempts to update the element's .style DOM property, but it doesn't normally work when !important rules are involved."
             },
             {
                 text:"$(elem).css({'background-color':'darkorange', color:'green'}, true);",
@@ -408,16 +425,16 @@
                 desc:"Change the colours, by passing boolean true as the last argument to the overloaded .css() jQuery method."
             },
             {
-                text:"$(elem).css('background-color', 'gray');",
+                text:"$(elem).important({'background-color':'darkgreen', color:'lightblue'});",
                 fn:function(){
-                    $(elem).css('background-color', 'gray');
+                    $(elem).important({'background-color':'darkgreen', color:'lightblue'});
                 },
-                desc:"Attempt to run a standard jQuery method - this doesn't normally work when !important rules are involved."
+                desc:"Change the colours, using the .important() jQuery method."
             },
             {
-                text:"$.important(); $(elem).css('background-color', 'gray'); $.important(false);",
+                text:"$.important(); $(elem).css('background-color', 'darkorange'); $.important(false);",
                 fn:function(){
-                    $.important(function(){$(elem).css('background-color', 'gray');});
+                    $.important(function(){$(elem).css('background-color', 'darkorange');});
                 },
                 desc:"Turn the !important flag on, then run a jQuery method, then turn the !important flag off again."
             },
