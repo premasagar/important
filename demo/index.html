@@ -68,7 +68,6 @@
         h1 .sep {
             color:#777;
             margin:0.34em 0.34em 0 0.62em;
-            font-family:monospace;
         }
         h1 .console {
             color:#777;
@@ -87,7 +86,7 @@
         #elem {            
             border:1px solid #888;
             overflow:auto;
-            width:27.6em;
+            width:38.2em;
             /*
             max-width:38.2%;
             min-width:16em;
@@ -97,6 +96,7 @@
             top:0;
             left:0;
             margin:0 0.62em 0.62em 0;
+            font-family:monospace;
         }
         #elem pre {
             border-top-width:1px;
@@ -130,10 +130,9 @@
             /*
             width:56.8%;
             */
-            margin:0 0.62em 0.62em 1.62em;
+            margin:0 0.62em 0.62em 2.62em;
         }
         #controls h2 {
-            font-family: monospace;
             color:#555;
             font-size:1em;
             margin:0;
@@ -142,7 +141,6 @@
             text-transform:lowercase;
         }
         #controls .code {
-            font-family: monospace;
             color:#999;
             font-size:1em;
             float:left;
@@ -150,13 +148,11 @@
         #controls ol {
             margin:0;
             padding:0;
-            font-family:monospace;
         }
         #controls button {
-            font-size:1.38em;
+            font-size:1em;
             width:100%;
             text-align:left;
-            font-family:monospace;
             color:white;
             background-color:black;
             border:1px solid white;
@@ -193,16 +189,16 @@
 ">
 
 <!-- console -->
-<pre><code id=style-outer>
-<code class=comment>&lt;!-- a style element in the &lt;head&gt; of this document --&gt;</code>
-&lt;style id=style-elem&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
-</code></pre>
-
 <pre><code id=elem-outer>
 <code class=comment>&lt;!-- elem: a div element in the &lt;body&gt; of this document --&gt;</code>
 &lt;div id=elem style=&quot;
 <code id=elem-attr class=colours></code>
 &quot;&gt;&lt;/div&gt;
+</code></pre>
+
+<pre><code id=style-outer>
+<code class=comment>&lt;!-- a style element in the &lt;head&gt; of this document --&gt;</code>
+&lt;style id=style-elem&gt;<code id=style-csstext class=colours></code>&lt;/style&gt;
 </code></pre>
 
 <pre><code id=var-elem>
@@ -315,7 +311,7 @@
 
             // Update console
             $('#elem-attr')
-                .html(colorIt('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ')));
+                .html(colorIt('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ').replace(/^\n {4}/, '')));
                 
             $('#style-csstext')
                 .html(colorIt($style.html()));
@@ -366,6 +362,9 @@
             $('#var-important-flag')
                 .text($.important.status)
                 .important({'background-color': $.important.status ? 'darkgreen' : 'darkred'});
+                
+            $('h1 .important')
+                .important({'color': $.important.status ? 'lightgreen' : 'red'});
         },
         tests = [
             {
@@ -415,7 +414,7 @@
                 fn:function(){
                     $(elem).css('background-color', 'darkorange');
                 },
-                desc:"Attempt to run a standard jQuery method - this attempts to update the element's .style DOM property, but it doesn't normally work when !important rules are involved."
+                desc:"Attempt to run a standard jQuery method - this attempts to update the element's .style DOM property, but it doesn't normally work when !important rules are involved. However, it will work when $.important() is called first."
             },
             {
                 text:"$(elem).css({'background-color':'darkorange', color:'green'}, true);",
