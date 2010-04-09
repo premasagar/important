@@ -43,7 +43,7 @@
             position:relative;
         }
         h1 .slashslash {
-            color:#555;
+            color:#777;
             margin:0.34em 0.34em 0 0;
             font-family:monospace;
         }
@@ -64,12 +64,12 @@
             margin-top:1em;
         }
         h1 .sep {
-            color:#555;
+            color:#777;
             margin:0.34em 0.34em 0 0.62em;
             font-family:monospace;
         }
         h1 .console {
-            color:#555;
+            color:#777;
             margin:0.34em 0.34em 0 0;
             font-family:monospace;
         }
@@ -139,18 +139,21 @@
         #elem pre {
             border-top-width:1px;
             border-top-style:solid;
+            line-height:1.38em;
         }
         
         #elem code.background-color {
-            color:white;
+            color:#ccc;
             border-width:1px;
             border-style:solid;
+            font-weight:bold;
         }
         
         #elem code.color {
             background-color:black;
             border-width:1px;
             border-style:solid;
+            font-weight:bold;
         }
     </style>
 </head>
@@ -192,8 +195,11 @@
         elem = document.getElementById('elem'),
         styleElem = document.getElementById('style-elem');
 
-    jQuery(elem).css('background-color') = <code id=var-background-color class=background-color></code>;
-    jQuery(elem).css('color') = <code id=var-color class=color></code>;
+    $(elem).css('background-color') = <code id=var-background-color class=background-color></code>;
+    $(elem).css('color') = <code id=var-color class=color></code>;
+
+    $.curCSS(elem, 'background-color', true) = <code id=var-curcss-background-color class=background-color></code>;
+    $.curCSS(elem, 'color', true) = <code id=var-curcss-color class=color></code>;
 
     elem.style.backgroundColor = <code id=var-style-background-color class=background-color></code>;
     elem.style.color = <code id=var-style-color class=color></code>;
@@ -244,6 +250,9 @@
         // read css properties
         elemjQueryCssBg = $elem.css('background-color') || '',
         elemjQueryCssColor = $elem.css('color') || '',
+
+        elemjQueryCurCssBg = $.curCSS(elem, 'background-color', true),
+        elemjQueryCurCssColor = $.curCSS(elem, 'color', true),
         
         elemStyle = elem.style,
         elemStyleBg = elemStyle.backgroundColor || '',
@@ -279,6 +288,14 @@
                 .text(elemjQueryCssColor)
                 .important({'color': elemjQueryCssColor});
                 
+            $('#var-curcss-background-color')
+                .text(elemjQueryCurCssBg)
+                .important({'background-color': elemjQueryCurCssBg});
+                
+            $('#var-curcss-color')
+                .text(elemjQueryCurCssColor)
+                .important({'color': elemjQueryCurCssColor});
+                
             $('#var-style-background-color')
                 .text(elemStyleBg)
                 .important({'background-color': elemStyleBg});
@@ -292,11 +309,11 @@
                 
             $('#var-computedStyle-background-color')
                 .text(elemComputedStyleBg)
-                .important({'background-color': elemStyleBg});
+                .important({'background-color': elemComputedStyleBg});
                 
             $('#var-computedStyle-color')
                 .text(elemComputedStyleColor)
-                .important({'color': elemStyleColor});
+                .important({'color': elemComputedStyleColor});
                 
             $('#var-currentStyle-background-color')
                 .text(elemCurrentStyleBg)

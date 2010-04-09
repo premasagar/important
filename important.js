@@ -77,7 +77,7 @@
     }
     
     
-    // Add !important to the end of CSS rules, except to those that already have it
+    // Add !important to CSS rules if they don't already have it
     function toImportant(rulesets, makeImportant){
         // Cache regular expression
         var re = toImportant.re;
