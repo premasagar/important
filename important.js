@@ -201,18 +201,20 @@
             // If a function is passed, then execute it while the !important flag is set to true
             else if ($.isFunction(args[0])){
                 cacheImportant = important;
-                important = true;
+                $.important.status = important = true;
                 args[0].call(this);
-                important = cacheImportant;
+                $.important.status = important = cacheImportant;
             }
             
-            else if (typeof args[0] === 'boolean'){
-                important = args[0];
+            else if (typeof args[0] === 'undefined' || typeof args[0] === 'boolean'){
+                $.important.status = important = (args[0] !== false);
             }
             
             return important;
         },
         {
+            status: important,
+        
             // release native jQuery methods back to their original versions and return overriding methods
             noConflict: function(){
                 $.each(original, function(method, fn){
