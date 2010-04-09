@@ -432,9 +432,9 @@
                 desc:"Change the colours, using the .important() jQuery method."
             },
             {
-                text:"$.important(); $(elem).css('background-color', 'darkorange'); $.important(false);",
+                text:"$.important(); $(elem).css('background-color', 'black'); $.important(false);",
                 fn:function(){
-                    $.important(function(){$(elem).css('background-color', 'darkorange');});
+                    $.important(function(){$(elem).css('background-color', 'black');});
                 },
                 desc:"Turn the !important flag on, then run a jQuery method, then turn the !important flag off again."
             },
@@ -469,13 +469,16 @@
         ];
     
     $.each(tests, function(i, test){
-        $('<li><button>' + test.text + '</button></li>')
+        $('<button>' + test.text + '</button></li>')
             .attr('title', test.desc || '')
             .click(function(){
                 test.fn();
                 report();
             })
-            .appendTo('#controls > ol');
+            .appendTo(
+                $('<li></li>')
+                    .appendTo('#controls ol:first')
+            );
     });
 
     // Initial report
