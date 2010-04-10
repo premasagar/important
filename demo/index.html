@@ -289,7 +289,7 @@
         
         // colour it like it says
         colorIt = function(cssText){
-            return cssText.replace(/((background-)?color\s*:\s*)([\w#]+)(\s*)(! ?important)?(\s*[;$])/g, '$1<code style="$2color:$3;" class="$2color">$3</code>$4$5$6')
+            return cssText.replace(/((background-)?color\s*:\s*)([\w#]+)(\s*?)(\s?!)? ?(important)?(\s*[;$])/g, '$1<code style="$2color:$3;" class="$2color">$3$5$6</code>$7')
         },
         
         // write out report
@@ -465,7 +465,7 @@
                 fn:function(){
                     $.important.noConflict();
                 },
-                desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods."
+                desc:"Restore the overridden, css-related methods in jQuery, returning back the original methods. After executing this, passing boolean true $(elem).css() will have no effect."
             }
         ];
     
