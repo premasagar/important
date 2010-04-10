@@ -313,7 +313,7 @@
 
             // Update console
             $('#elem-attr')
-                .html(colorIt('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ').replace(/^\n {4}/, '')));
+                .html(colorIt('    ' + $elem.attr('style').replace(/;\s*/, ';\n    ').replace(/^\n\s*/, '')));
                 
             $('#style-csstext')
                 .html(colorIt($style.html()));
