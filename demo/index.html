@@ -490,7 +490,8 @@
             elem: elem,
             styleElem: styleElem,
             computed: window.getComputedStyle(elem, null),
-            report: report
+            report: report,
+            _: (console && console.log) ? console.log : function(){}
         }
     );
 }(jQuery));

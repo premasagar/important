@@ -234,7 +234,7 @@
             elem = $(this),
             args = $.makeArray(arguments).concat(true),
             nodeName = elem.data('nodeName'),
-            property, makeImportant, fn;
+            property, makeImportant, fn, oldStyleElem, newStyleInsert, newStyleInsertVerb;
                 
         // .css() is the default method, e.g. $(elem).important({border:'1px solid red'});
         if (typeof method === 'undefined' || typeof method === 'boolean'){
@@ -246,9 +246,56 @@
             // style elements
             if (nodeName === 'style'){
                 makeImportant = (method !== false);
+
+                /*
+                // APPROACH 1: Change innerHTML
+                // results in incomplete rendering of changes when there are many rules - seen in FF 3.6.3
                 elem.html(
                     toImportant(elem.html(), makeImportant)
                 );
+                */
+
+                /*
+                // APPROACH 2: replace with new node
+                // This works, but means that references to the original style element will be broken. This may not be problematic in most cases.
+                newStyleInsert = elem.next();
+                if (!newStyleInsert.length){
+                    newStyleInsert = elem.parent();
+                    newStyleInsertVerb = 'appendTo';
+                }
+                else {
+                    newStyleInsertVerb = 'insertAfter';
+                }
+                elem.remove();
+                elem = $(
+                    '<style id="css-third-party">' +
+                        $.important(elem.html(), makeImportant) +
+                    '</style>'
+                )[newStyleInsertVerb](newStyleInsert);
+                */
+
+                // APPROACH 3: CSS DOM
+                elem.html(
+                    toImportant(elem.html(), makeImportant)
+                );
+                
+                var stylesheet = elem.attr('sheet');
+                _('stylesheet', stylesheet);
+                if (stylesheet && stylesheet.cssRules){
+                    _('cssRules', stylesheet.cssRules);
+                    $.each(stylesheet.cssRules, function(i, rule){
+                        _('rule', rule, rule.cssText);
+                        _($.important(rule.style.cssText, makeImportant));
+                        if (rule.type === CSSRule.STYLE_RULE){
+                            rule.style.cssText = $.important(rule.style.cssText, makeImportant);
+                        }
+                        /*
+                        if (rule.cssText){
+                            rule.cssText = $.important(rule.cssText, makeImportant);
+                        }
+                        */
+                    });
+                }
             }
             else {
                 elem.attr(
