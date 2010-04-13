@@ -297,6 +297,7 @@
 
 /*
     NOTES:
+    http://dev.w3.org/csswg/cssom/#dom-cssstyledeclaration-getpropertypriority
     $('style')[0].sheet.cssRules[0].style.getPropertyPriority('color');
     cssText on style object possible
 */
