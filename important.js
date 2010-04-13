@@ -294,3 +294,9 @@
         return elem;
     };
 }(jQuery));
+
+/*
+    NOTES:
+    $('style')[0].sheet.cssRules[0].style.getPropertyPriority('color');
+    cssText on style object possible
+*/

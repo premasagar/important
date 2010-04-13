@@ -26,7 +26,7 @@
             padding:0.62em;
             margin:0;
         }
-        h1[title], p[title], span[title] {
+        h1[title]:not(a > *), p[title]:not(a > *), span[title]:not(a > *) {
             cursor:help;
         }
         h1 {
@@ -207,8 +207,8 @@
 <code class=comment>&lt;!-- CSS style properties of the element,
     using JavaScript DOM API & jQuery methods --&gt;</code>
 &lt;script&gt;
-    <code class=comment>// Global variables (you can access these via
-        your browser console, e.g. Firebug)</code>
+    <code class=comment>/* Global variables (you can access these via
+        your browser console, e.g. Firebug) */</code>
     var
         elem = document.getElementById('elem'),
         styleElem = document.getElementById('style-elem');
