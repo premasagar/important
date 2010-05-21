@@ -39,7 +39,12 @@
             return new RegExp('(?:^|\\s|;)(' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
         }
         function find(property, rules){
-            return rules.match(regexDeclaration(property));
+            var match = rules.match(regexDeclaration(property));
+            if (match){
+                // a bit inelegant: remove leading semicolon if present
+                match[0] = match[0].replace(/^;/, '');
+            }
+            return match;
         }
     
         var oldDeclaration, newDeclaration, makeImportant;
@@ -59,7 +64,6 @@
                 makeImportant = value;
                 newDeclaration = $.important(property + ':' + oldDeclaration[2], makeImportant);
             }
-            
             rules = rules.replace(oldDeclaration[0], newDeclaration);
         }
         
