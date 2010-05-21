@@ -2,7 +2,7 @@
 
 /*!
 * !important
-*   github.com/premasagar/mishmash/tree/master/important/
+*   github.com/premasagar/important/
 *
 *//*
     css !important manipulator (jQuery plugin)
