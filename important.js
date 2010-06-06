@@ -2,7 +2,7 @@
 
 /*!
 * !important
-*   github.com/premasagar/mishmash/tree/master/important/
+*   github.com/premasagar/important/
 *
 *//*
     css !important manipulator (jQuery plugin)
@@ -39,7 +39,12 @@
             return new RegExp('(?:^|\\s|;)(' + property + ')\\s*:\\s*([^;]*(?:;|$))', 'i');
         }
         function find(property, rules){
-            return rules.match(regexDeclaration(property));
+            var match = rules.match(regexDeclaration(property));
+            if (match){
+                // a bit inelegant: remove leading semicolon if present
+                match[0] = match[0].replace(/^;/, '');
+            }
+            return match;
         }
     
         var oldDeclaration, newDeclaration, makeImportant;
@@ -59,7 +64,6 @@
                 makeImportant = value;
                 newDeclaration = $.important(property + ':' + oldDeclaration[2], makeImportant);
             }
-            
             rules = rules.replace(oldDeclaration[0], newDeclaration);
         }
         
@@ -341,3 +345,10 @@
         return elem;
     };
 }(jQuery));
+
+/*
+    NOTES:
+    http://dev.w3.org/csswg/cssom/#dom-cssstyledeclaration-getpropertypriority
+    $('style')[0].sheet.cssRules[0].style.getPropertyPriority('color');
+    cssText on style object possible
+*/

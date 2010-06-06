@@ -1,0 +1,7 @@
+"!important":http://github.com/premasagar/important/ is a CSS !important manipulator (jQuery plugin).
+
+* by "Premasagar Rose":http://github.com/premasagar
+** "premasagar.com":http://premasagar.com / "dharmafly.com":http://dharmafly.com
+* "MIT license":http://opensource.org/licenses/mit-license.php
+
+Full documentation to come. For now, clone the code and open demo/index.html in the browser.
