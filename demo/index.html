@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang=en>
+<html lang="en">
 <head>
-    <meta charset=utf-8 />
+    <meta charset="utf-8">
     <title>!importantjs</title>
     <!-- <script src="../../mishmash/console/console.js"></script> -->
     <!-- <script src=http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js></script> -->
-    <script src="jquery.js"</script>
+    <script src="jquery.js"></script>
     <script src="../important.js"></script>
     
 
 <!-- document-level !important rules for #elem -->
-<style id=style-elem>
+<style id="style-elem">
 #elem {
     background-color: darkblue !important;
     color: yellow !important;
@@ -492,8 +492,7 @@
             elem: elem,
             styleElem: styleElem,
             computed: window.getComputedStyle(elem, null),
-            report: report,
-            _: (console && console.log) ? console.log : function(){}
+            report: report
         }
     );
 }(jQuery));
